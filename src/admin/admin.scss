@@ -1,0 +1,36 @@
+@import '../prefix-vars.scss';
+@import '../mixins';
+@import '../../node_modules/atrc/build/index';
+
+#wpbody-content {
+	&>.notice {
+		&:not(:last-of-type) {
+			margin-top: 80px;
+		}
+
+		+.notice {
+			margin-top: 5px !important;
+		}
+	}
+}
+
+#{$appPrefix} {
+
+	//overriding WordPress default css
+	&-btn {
+
+		&-outln-primary,
+		&-primary {
+			&:hover {
+				color: #fff;
+			}
+		}
+
+		&-light,
+		&-secondary {
+			&:hover {
+				color: #000;
+			}
+		}
+	}
+}

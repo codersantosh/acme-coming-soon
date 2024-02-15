@@ -1,0 +1,394 @@
+# Copyright (C) 2024 codersantosh
+# This file is distributed under the GPL-2.0+.
+msgid ""
+msgstr ""
+"Project-Id-Version: Acme Coming Soon and Maintenance Mode Page 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/acme-coming-soon\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2024-02-15T09:14:52+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.6.0\n"
+"X-Domain: acme-coming-soon\n"
+
+#. Plugin Name of the plugin
+#: includes/functions.php:161
+msgid "Acme Coming Soon and Maintenance Mode Page"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+msgid "https://addonspress.com/"
+msgstr ""
+
+#. Description of the plugin
+msgid "Coming Soon and Maintenance Mode Page simplifies WordPress site management. Easily enable or disable Coming Soon or Maintenance Mode in a toggle, redirecting unauthorized users to a personalized page. Craft your page using Gutenberg Blocks/Patterns or your favorite page builder with complete flexibility and features for creating any WordPress page."
+msgstr ""
+
+#. Author of the plugin
+msgid "codersantosh"
+msgstr ""
+
+#. translators: %s: Property name.
+#: includes/api/class-api-settings.php:157
+msgid "The %s property has an invalid stored value, and cannot be updated to null."
+msgstr ""
+
+#: includes/api/class-api.php:114
+#: includes/api/class-api.php:126
+msgid "Cheatin&#8217; huh?"
+msgstr ""
+
+#: includes/class-patterns.php:76
+msgid "Coming Soon and Maintenance"
+msgstr ""
+
+#: includes/functions.php:168
+msgid "Coming Soon Page"
+msgstr ""
+
+#: includes/functions.php:169
+msgid "Coming Soon"
+msgstr ""
+
+#. translators: %s is the plugin name
+#: includes/functions.php:178
+msgid "Congratulations on choosing the %s for your website Coming Soon or Maintenance Mode. We recommend taking a few minutes to read the following information on how the plugin works. Please read it carefully to fully understand capabilities of the plugin and how to use them effectively."
+msgstr ""
+
+#. translators: %s is the plugin name
+#: includes/functions.php:190
+msgid "Congratulations! You have successfully installed %s and it is ready for enabling or disabling coming soon or maintenance mode."
+msgstr ""
+
+#. translators: %s is the plugin name
+#: includes/functions.php:198
+msgid "If you have any questions or need assistance, please do not hesitate to contact us for support. The %s plugin caters to WordPress site owners, developers and designers seeking to create and display Coming Soon page for their new site or display Maintenance Mode while updating existing sites."
+msgstr ""
+
+#: includes/functions.php:207
+msgid "Get started"
+msgstr ""
+
+#: includes/functions.php:213
+msgid "Docmentation"
+msgstr ""
+
+#: includes/functions.php:219
+msgid "Get support"
+msgstr ""
+
+#: includes/functions.php:233
+msgid "Visit site"
+msgstr ""
+
+#: includes/functions.php:239
+#: includes/functions.php:251
+msgid "Get Support"
+msgstr ""
+
+#: includes/functions.php:246
+msgid "Contact Information"
+msgstr ""
+
+#: includes/functions.php:250
+msgid "Support"
+msgstr ""
+
+#: includes/functions.php:257
+msgid "Email"
+msgstr ""
+
+#: includes/functions.php:258
+msgid "codersantosh@gmail.com"
+msgstr ""
+
+#: includes/functions.php:264
+msgid "Location"
+msgstr ""
+
+#: includes/functions.php:265
+msgid "Kathmandu, Nepal"
+msgstr ""
+
+#: includes/functions.php:289
+msgid "Enable coming soon"
+msgstr ""
+
+#: includes/functions.php:293
+msgid "Do few settings"
+msgstr ""
+
+#: includes/functions.php:297
+msgid "Start developing your site"
+msgstr ""
+
+#: includes/functions.php:303
+msgid "Knowledge base"
+msgstr ""
+
+#: includes/functions.php:304
+msgid "The utilization of this plugin can be facilitated by perusing comprehensive and well-documented articles."
+msgstr ""
+
+#: includes/functions.php:308
+msgid "Visit knowledge base"
+msgstr ""
+
+#: includes/functions.php:314
+msgid "Community"
+msgstr ""
+
+#. translators: %s is the plugin name
+#: includes/functions.php:317
+msgid "Our objective is to enhance the customer experience, we invite you to join our community where you can receive immediate support."
+msgstr ""
+
+#: includes/functions.php:323
+msgid "Visit community page"
+msgstr ""
+
+#: includes/functions.php:328
+msgid "24x7 support"
+msgstr ""
+
+#. translators: %s is the plugin name
+#: includes/functions.php:331
+msgid "Our support team is available 24/7 to assist you in the event that you encounter any problems while utilizing this plugin."
+msgstr ""
+
+#: includes/functions.php:337
+msgid "Create a support thread"
+msgstr ""
+
+#: includes/functions.php:343
+msgid "Video guide"
+msgstr ""
+
+#. translators: %s is the plugin name
+#: includes/functions.php:346
+msgid "The plugin is accompanied by comprehensive video tutorials that provide practical demonstrations for most customization."
+msgstr ""
+
+#: includes/functions.php:352
+msgid "View video guide"
+msgstr ""
+
+#: includes/functions.php:359
+msgid "Quick links to settings"
+msgstr ""
+
+#: includes/functions.php:377
+msgid "Changelog"
+msgstr ""
+
+#: languages/translation-js.php:2
+msgid "Error while data store process for %s."
+msgstr ""
+
+#: languages/translation-js.php:3
+msgid "Error: Icon url should contain .svg extension"
+msgstr ""
+
+#: languages/translation-js.php:4
+msgid "Error on icon url"
+msgstr ""
+
+#: languages/translation-js.php:5
+msgid "Select"
+msgstr ""
+
+#: languages/translation-js.php:6
+msgid "Untitled"
+msgstr ""
+
+#: languages/translation-js.php:7
+msgid "Posts"
+msgstr ""
+
+#: languages/translation-js.php:8
+msgid "No posts found!"
+msgstr ""
+
+#: languages/translation-js.php:9
+msgid "Loading…"
+msgstr ""
+
+#: languages/translation-js.php:10
+msgid "Repeater fields"
+msgstr ""
+
+#: languages/translation-js.php:11
+msgid "Delete"
+msgstr ""
+
+#: languages/translation-js.php:12
+msgid "Cancel"
+msgstr ""
+
+#: languages/translation-js.php:13
+msgid "Add repeater fields"
+msgstr ""
+
+#: languages/translation-js.php:14
+msgid "Saved"
+msgstr ""
+
+#: languages/translation-js.php:15
+msgid "Save settings"
+msgstr ""
+
+#: languages/translation-js.php:16
+msgid "More"
+msgstr ""
+
+#: languages/translation-js.php:17
+msgid "Close notification"
+msgstr ""
+
+#: languages/translation-js.php:18
+msgid "Open notification"
+msgstr ""
+
+#: languages/translation-js.php:19
+msgid "Close sidebar"
+msgstr ""
+
+#: languages/translation-js.php:20
+msgid "Open sidebar"
+msgstr ""
+
+#: languages/translation-js.php:21
+msgid "Getting started"
+msgstr ""
+
+#: languages/translation-js.php:22
+msgid "Settings"
+msgstr ""
+
+#: languages/translation-js.php:23
+msgid "Show all hidden informations, notices and documentations "
+msgstr ""
+
+#: languages/translation-js.php:24
+msgid "Activate coming soon (Maintenance) mode"
+msgstr ""
+
+#: languages/translation-js.php:25
+msgid "Access site"
+msgstr ""
+
+#: languages/translation-js.php:26
+msgid "None"
+msgstr ""
+
+#: languages/translation-js.php:27
+msgid "Admin only"
+msgstr ""
+
+#: languages/translation-js.php:28
+msgid "Login user"
+msgstr ""
+
+#: languages/translation-js.php:29
+msgid "Selected roles"
+msgstr ""
+
+#: languages/translation-js.php:30
+msgid "Allow user roles during maintenance mode."
+msgstr ""
+
+#: languages/translation-js.php:31
+msgid "Select maintenance page"
+msgstr ""
+
+#: languages/translation-js.php:32
+msgid "Exclude from Coming soon (Maintenance) mode"
+msgstr ""
+
+#: languages/translation-js.php:33
+msgid "Allow search bots during maintenance mode."
+msgstr ""
+
+#: languages/translation-js.php:34
+msgid "Allow IPs during maintenance mode."
+msgstr ""
+
+#: languages/translation-js.php:35
+msgid "Enter valid IP"
+msgstr ""
+
+#: languages/translation-js.php:36
+msgid "Allow Slugs during maintenance mode."
+msgstr ""
+
+#: languages/translation-js.php:37
+msgid "Documentation"
+msgstr ""
+
+#: languages/translation-js.php:38
+msgid "Who can access the site during maintenance mode?"
+msgstr ""
+
+#: languages/translation-js.php:39
+msgid "What content is displayed during maintenance mode?"
+msgstr ""
+
+#: languages/translation-js.php:40
+msgid "During maintenance mode, the content displayed on your website is determined by the maintenance page that you have selected. You can choose to display a simple message informing visitors that your website is currently undergoing maintenance, or you can add more detailed information about the updates or changes that you are making. You can also add your logo, branding, and other design elements to the maintenance page to make it more visually appealing. The design is on your hand."
+msgstr ""
+
+#: languages/translation-js.php:41
+msgid "Can I exclude specific IP addresses, pages, or categories from Coming Soon Mode?"
+msgstr ""
+
+#: languages/translation-js.php:42
+msgid "Yes, you can allow search bots, IPs, and specific pages or post categories via slug when the Coming Soon Mode is activated. Simply configure the exclusions in the plugin settings to grant access to specific entities during maintenance."
+msgstr ""
+
+#: languages/translation-js.php:43
+msgid "Coming Soon and Maintenance Mode Page settings"
+msgstr ""
+
+#: languages/translation-js.php:44
+msgid "Remove all plugin settings when deactivating."
+msgstr ""
+
+#: languages/translation-js.php:45
+msgid "Enabling this option will erase all settings associated with the plugin from the WordPress options table. However, please note that the selected page will not be deleted from Pages."
+msgstr ""
+
+#: languages/translation-js.php:46
+msgid "Do I need to activate this option?"
+msgstr ""
+
+#: languages/translation-js.php:47
+msgid "If you anticipate using the `Maintenance feature` in the future, no need to activate it."
+msgstr ""
+
+#: languages/translation-js.php:48
+msgid "General"
+msgstr ""
+
+#: languages/translation-js.php:49
+msgid "Advanced"
+msgstr ""
+
+#: languages/translation-js.php:50
+msgid "The item with id %s is updated successfully"
+msgstr ""
+
+#: languages/translation-js.php:51
+msgid "The item with id %s is added successfully"
+msgstr ""
+
+#: languages/translation-js.php:52
+msgid "Deleted successfully"
+msgstr ""
+
+#: languages/translation-js.php:53
+msgid "Updated successfully"
+msgstr ""
