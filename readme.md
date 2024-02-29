@@ -17,6 +17,7 @@ Ideal for new blog or site development, as well as updates and maintenance for e
   - [Table of contents](#table-of-contents)
   - [Getting Started](#getting-started)
   - [Installation](#installation)
+  - [Inbuilt Patterns for Quick Setup](#inbuilt-patterns-for-quick-setup)
   - [Usage](#usage)
   - [Features](#features)
   - [Contributing](#contributing)
