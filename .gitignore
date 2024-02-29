@@ -1,7 +1,6 @@
 .sass-cache
 node_modules/
 acme-coming-soon
-acme-coming-soon.zip
 deploy/
 assets/blocks
 /vendor/

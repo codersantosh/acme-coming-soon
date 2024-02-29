@@ -9,7 +9,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2024-02-15T09:14:52+00:00\n"
+"POT-Creation-Date: 2024-02-29T18:27:29+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.6.0\n"
 "X-Domain: acme-coming-soon\n"
@@ -20,8 +20,7 @@ msgid "Acme Coming Soon and Maintenance Mode Page"
 msgstr ""
 
 #. Plugin URI of the plugin
-#. Author URI of the plugin
-msgid "https://addonspress.com/"
+msgid "https://github.com/codersantosh/acme-coming-soon"
 msgstr ""
 
 #. Description of the plugin
@@ -30,6 +29,10 @@ msgstr ""
 
 #. Author of the plugin
 msgid "codersantosh"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://github.com/codersantosh"
 msgstr ""
 
 #. translators: %s: Property name.
@@ -218,177 +221,181 @@ msgid "Loading…"
 msgstr ""
 
 #: languages/translation-js.php:10
-msgid "Repeater fields"
+msgid "Item not found with value %s"
 msgstr ""
 
 #: languages/translation-js.php:11
-msgid "Delete"
+msgid "Repeater fields"
 msgstr ""
 
 #: languages/translation-js.php:12
-msgid "Cancel"
+msgid "Delete"
 msgstr ""
 
 #: languages/translation-js.php:13
-msgid "Add repeater fields"
+msgid "Cancel"
 msgstr ""
 
 #: languages/translation-js.php:14
-msgid "Saved"
+msgid "Add repeater fields"
 msgstr ""
 
 #: languages/translation-js.php:15
-msgid "Save settings"
+msgid "Saved"
 msgstr ""
 
 #: languages/translation-js.php:16
-msgid "More"
+msgid "Save settings"
 msgstr ""
 
 #: languages/translation-js.php:17
-msgid "Close notification"
+msgid "More"
 msgstr ""
 
 #: languages/translation-js.php:18
-msgid "Open notification"
+msgid "Close notification"
 msgstr ""
 
 #: languages/translation-js.php:19
-msgid "Close sidebar"
+msgid "Open notification"
 msgstr ""
 
 #: languages/translation-js.php:20
-msgid "Open sidebar"
+msgid "Close sidebar"
 msgstr ""
 
 #: languages/translation-js.php:21
-msgid "Getting started"
+msgid "Open sidebar"
 msgstr ""
 
 #: languages/translation-js.php:22
-msgid "Settings"
+msgid "Getting started"
 msgstr ""
 
 #: languages/translation-js.php:23
-msgid "Show all hidden informations, notices and documentations "
+msgid "Settings"
 msgstr ""
 
 #: languages/translation-js.php:24
-msgid "Activate coming soon (Maintenance) mode"
+msgid "Show all hidden informations, notices and documentations "
 msgstr ""
 
 #: languages/translation-js.php:25
-msgid "Access site"
+msgid "Activate coming soon (Maintenance) mode"
 msgstr ""
 
 #: languages/translation-js.php:26
-msgid "None"
+msgid "Access site"
 msgstr ""
 
 #: languages/translation-js.php:27
-msgid "Admin only"
+msgid "None"
 msgstr ""
 
 #: languages/translation-js.php:28
-msgid "Login user"
+msgid "Admin only"
 msgstr ""
 
 #: languages/translation-js.php:29
-msgid "Selected roles"
+msgid "Login user"
 msgstr ""
 
 #: languages/translation-js.php:30
-msgid "Allow user roles during maintenance mode."
+msgid "Selected roles"
 msgstr ""
 
 #: languages/translation-js.php:31
-msgid "Select maintenance page"
+msgid "Allow user roles during maintenance mode."
 msgstr ""
 
 #: languages/translation-js.php:32
-msgid "Exclude from Coming soon (Maintenance) mode"
+msgid "Select maintenance page"
 msgstr ""
 
 #: languages/translation-js.php:33
-msgid "Allow search bots during maintenance mode."
+msgid "Exclude from Coming soon (Maintenance) mode"
 msgstr ""
 
 #: languages/translation-js.php:34
-msgid "Allow IPs during maintenance mode."
+msgid "Allow search bots during maintenance mode."
 msgstr ""
 
 #: languages/translation-js.php:35
-msgid "Enter valid IP"
+msgid "Allow IPs during maintenance mode."
 msgstr ""
 
 #: languages/translation-js.php:36
-msgid "Allow Slugs during maintenance mode."
+msgid "Enter valid IP"
 msgstr ""
 
 #: languages/translation-js.php:37
-msgid "Documentation"
+msgid "Allow Slugs during maintenance mode."
 msgstr ""
 
 #: languages/translation-js.php:38
-msgid "Who can access the site during maintenance mode?"
+msgid "Documentation"
 msgstr ""
 
 #: languages/translation-js.php:39
-msgid "What content is displayed during maintenance mode?"
+msgid "Who can access the site during maintenance mode?"
 msgstr ""
 
 #: languages/translation-js.php:40
-msgid "During maintenance mode, the content displayed on your website is determined by the maintenance page that you have selected. You can choose to display a simple message informing visitors that your website is currently undergoing maintenance, or you can add more detailed information about the updates or changes that you are making. You can also add your logo, branding, and other design elements to the maintenance page to make it more visually appealing. The design is on your hand."
+msgid "What content is displayed during maintenance mode?"
 msgstr ""
 
 #: languages/translation-js.php:41
-msgid "Can I exclude specific IP addresses, pages, or categories from Coming Soon Mode?"
+msgid "During maintenance mode, the content displayed on your website is determined by the maintenance page that you have selected. You can choose to display a simple message informing visitors that your website is currently undergoing maintenance, or you can add more detailed information about the updates or changes that you are making. You can also add your logo, branding, and other design elements to the maintenance page to make it more visually appealing. The design is on your hand."
 msgstr ""
 
 #: languages/translation-js.php:42
-msgid "Yes, you can allow search bots, IPs, and specific pages or post categories via slug when the Coming Soon Mode is activated. Simply configure the exclusions in the plugin settings to grant access to specific entities during maintenance."
+msgid "Can I exclude specific IP addresses, pages, or categories from Coming Soon Mode?"
 msgstr ""
 
 #: languages/translation-js.php:43
-msgid "Coming Soon and Maintenance Mode Page settings"
+msgid "Yes, you can allow search bots, IPs, and specific pages or post categories via slug when the Coming Soon Mode is activated. Simply configure the exclusions in the plugin settings to grant access to specific entities during maintenance."
 msgstr ""
 
 #: languages/translation-js.php:44
-msgid "Remove all plugin settings when deactivating."
+msgid "Coming Soon and Maintenance Mode Page settings"
 msgstr ""
 
 #: languages/translation-js.php:45
-msgid "Enabling this option will erase all settings associated with the plugin from the WordPress options table. However, please note that the selected page will not be deleted from Pages."
+msgid "Remove all plugin settings when deactivating."
 msgstr ""
 
 #: languages/translation-js.php:46
-msgid "Do I need to activate this option?"
+msgid "Enabling this option will erase all settings associated with the plugin from the WordPress options table. However, please note that the selected page will not be deleted from Pages."
 msgstr ""
 
 #: languages/translation-js.php:47
-msgid "If you anticipate using the `Maintenance feature` in the future, no need to activate it."
+msgid "Do I need to activate this option?"
 msgstr ""
 
 #: languages/translation-js.php:48
-msgid "General"
+msgid "If you anticipate using the `Maintenance feature` in the future, no need to activate it."
 msgstr ""
 
 #: languages/translation-js.php:49
-msgid "Advanced"
+msgid "General"
 msgstr ""
 
 #: languages/translation-js.php:50
-msgid "The item with id %s is updated successfully"
+msgid "Advanced"
 msgstr ""
 
 #: languages/translation-js.php:51
-msgid "The item with id %s is added successfully"
+msgid "The item with id %s is updated successfully"
 msgstr ""
 
 #: languages/translation-js.php:52
-msgid "Deleted successfully"
+msgid "The item with id %s is added successfully"
 msgstr ""
 
 #: languages/translation-js.php:53
+msgid "Deleted successfully"
+msgstr ""
+
+#: languages/translation-js.php:54
 msgid "Updated successfully"
 msgstr ""

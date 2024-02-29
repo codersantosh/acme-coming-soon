@@ -7,6 +7,7 @@ __("Untitled","acme-coming-soon");
 __("Posts","acme-coming-soon");
 __("No posts found!","acme-coming-soon");
 __("Loading…","acme-coming-soon");
+__("Item not found with value %s","acme-coming-soon");
 __("Repeater fields","acme-coming-soon");
 __("Delete","acme-coming-soon");
 __("Cancel","acme-coming-soon");
