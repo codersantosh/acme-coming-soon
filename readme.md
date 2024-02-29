@@ -37,6 +37,22 @@ There are two ways to install the plugin:
 
 After installation, activate the plugin through the 'Plugins' menu in WordPress.
 
+## Inbuilt Patterns for Quick Setup
+
+The 'Coming Soon and Maintenance Mode Page' plugin now comes with a collection of inbuilt Gutenberg Block Patterns that users can easily apply for a quick setup.
+
+### Locating and Inserting Patterns
+
+- **Access the Block Editor:** Open the page or post where you want to use a pattern. Click the "Add Block" button (+) or the "+" sign in the top left corner of the block editor.
+
+- **Switch to the Patterns Tab:** In the block inserter window, click the "Patterns" tab. This displays all available patterns.
+
+- **Coming Soon and Maintenance:** Within the Patterns tab, find the category labeled "Coming Soon and Maintenance." This categorization ensures a quick and efficient search for the patterns tailored to your needs.
+
+- **Insert a Pattern:** Click on one of the pattern to insert it directly into your edit content area. 
+
+- **Modify as Needed:** The inserted pattern serves as a starter template. Customize it effortlessly to align with your specific requirements. Modify text, colors, and any other elements to ensure your Coming Soon or Maintenance Mode page reflects your unique style.
+
 ## Usage
 
 Now that you have the 'Coming Soon and Maintenance Mode Page' plugin installed, you can use its features for:
