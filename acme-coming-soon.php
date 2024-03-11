@@ -40,7 +40,7 @@ define( 'ACME_COMING_SOON_OPTION_NAME', 'acme_coming_soon_options' );
  * The code that runs during plugin activation.
  * This action is documented in includes/class--activator.php
  */
-function activate_acme_coming_soon() {
+function acme_coming_soon_activate() {
 
 	require_once ACME_COMING_SOON_PATH . 'includes/class-activator.php';
 	Acme_Coming_Soon_Activator::activate();
@@ -50,13 +50,13 @@ function activate_acme_coming_soon() {
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-deactivator.php
  */
-function deactivate_acme_coming_soon() {
+function acme_coming_soon_deactivate() {
 	require_once ACME_COMING_SOON_PATH . 'includes/class-deactivator.php';
 	Acme_Coming_Soon_Deactivator::deactivate();
 }
 
-register_activation_hook( __FILE__, 'activate_acme_coming_soon' );
-register_deactivation_hook( __FILE__, 'deactivate_acme_coming_soon' );
+register_activation_hook( __FILE__, 'acme_coming_soon_activate' );
+register_deactivation_hook( __FILE__, 'acme_coming_soon_deactivate' );
 
 /**
  * The core plugin class that is used to define internationalization,
@@ -73,11 +73,11 @@ require ACME_COMING_SOON_PATH . 'includes/main.php';
  *
  * @since    1.0.0
  */
-function run_acme_coming_soon() {
+function acme_coming_soon_run() {
 
 	$plugin = new Acme_Coming_Soon();
 	$plugin->run();
 
 }
-run_acme_coming_soon();
+acme_coming_soon_run();
 

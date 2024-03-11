@@ -256,7 +256,7 @@ class Acme_Coming_Soon_Public {
 
 			if ( $template && get_the_ID() !== $template ) {
 				wp_safe_redirect( get_the_permalink( $template ) );
-					exit;
+				exit;
 			}
 		}
 	}
