@@ -60,8 +60,7 @@ class Acme_Coming_Soon_Public {
 		// Check if the user agent is set and not empty.
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && ! empty( $_SERVER['HTTP_USER_AGENT'] ) ) {
 
-			// phpcs:ignore
-			$user_agent = wp_unslash( $_SERVER['HTTP_USER_AGENT'] );
+			$user_agent = sanitize_text_field( wp_unslash( $_SERVER['HTTP_USER_AGENT'] ) );
 
 			$bots = apply_filters(
 				'acme_coming_soon_search_bots',
@@ -154,6 +153,8 @@ class Acme_Coming_Soon_Public {
 
 		if ( isset( $settings['exclude']['ips'] ) && $settings['exclude']['ips'] && isset( $_SERVER['REMOTE_ADDR'] ) && ! empty( $_SERVER['REMOTE_ADDR'] ) ) {
 			$excluded_ips = $settings['exclude']['ips'];
+
+			// acme_coming_soon_sanitize_ip is sanitization function for IP address.
 			// phpcs:ignore
 			$remote_address = acme_coming_soon_sanitize_ip( $_SERVER['REMOTE_ADDR'] );
 			foreach ( $excluded_ips as $ip ) {
@@ -185,8 +186,7 @@ class Acme_Coming_Soon_Public {
 
 		if ( isset( $settings['exclude']['slugs'] ) && $settings['exclude']['slugs'] && isset( $_SERVER['REQUEST_URI'] ) && ! empty( $_SERVER['REQUEST_URI'] ) ) {
 			$excluded_slugs = $settings['exclude']['slugs'];
-			// phpcs:ignore
-			$request_uri    = $_SERVER['REQUEST_URI'];
+			$request_uri    = sanitize_text_field( wp_unslash( $_SERVER['REQUEST_URI'] ) );
 			foreach ( $excluded_slugs as $slug ) {
 				if ( ! $slug ) {
 					continue;
