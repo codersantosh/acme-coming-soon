@@ -1,0 +1,222 @@
+msgid ""
+msgstr ""
+"Content-Type: text/plain; charset=utf-8\n"
+"X-Generator: babel-plugin-makepot\n"
+
+#: src/admin/components/organisms/admin-header.js:24
+msgid "Getting started"
+msgstr ""
+
+#: src/admin/components/organisms/admin-header.js:29
+msgid "Settings"
+msgstr ""
+
+#: src/admin/components/organisms/admin-header.js:47
+msgid "Show all hidden informations, notices and documentations "
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:103
+msgid "Do I need to activate this option?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:108
+msgid ""
+"If you anticipate using the `Maintenance feature` in the future, no need to "
+"activate it."
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:142
+#: src/admin/pages/settings/pages/maintenance.js:438
+msgid "Coming Soon and Maintenance Mode Page settings"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:42
+msgid "Remove all plugin settings when deactivating."
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:66
+#: src/admin/pages/settings/pages/maintenance.js:329
+msgid "Documentation"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:88
+msgid "What does \"Remove all plugin settings when deactivating\" do?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:96
+msgid ""
+"Enabling this option will erase all settings associated with the plugin "
+"from the WordPress options table. However, please note that the selected "
+"page will not be deleted from Pages."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:104
+msgid "Selected roles"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:113
+msgid "Allow user roles during maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:137
+msgid "Select maintenance page"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:149
+msgid "Exclude from Coming soon (Maintenance) mode"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:156
+msgid "Allow search bots during maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:160
+msgid ""
+"Enable access for search bots while the website is in \"Coming Soon\" or "
+"maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:179
+msgid "Allow IPs during maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:185
+msgid "Add IPs"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:201
+#. %s: placeholder for idx
+msgid "IP %d"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:207
+msgid "IP"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:208
+msgid "Enter valid IP"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:236
+msgid "Add IP"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:246
+msgid "Allow Slugs during maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:252
+msgid "Add slugs"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:268
+#. %s: placeholder for idx
+msgid "Slug %d"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:271
+msgid "Remove item"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:274
+msgid "Slug"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:275
+msgid "Any path of the url"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:303
+msgid "Add slug"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:351
+msgid "What is the \"Coming Soon (Maintenance) mode\"?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:359
+msgid ""
+"\"Coming Soon (Maintenance) mode\" is a feature that allows you to create a "
+"temporary maintenance page for your website while you work on new site, "
+"updates or changes. This page is displayed to visitors when they try to "
+"access your website, letting them know that your website is temporarily "
+"unavailable."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:366
+msgid "Who can access the site during maintenance mode?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:374
+msgid ""
+"By default, only logged-in users with administrative privileges can access "
+"the site during maintenance mode. This is to ensure that visitors to your "
+"website don't see an unfinished or broken version of your site. "
+"Nevertheless, you have the flexibility to tailor this functionality and "
+"permit access to various user roles."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:381
+msgid "What content is displayed during maintenance mode?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:389
+msgid ""
+"During maintenance mode, the content displayed on your website is "
+"determined by the maintenance page that you have selected. You can choose "
+"to display a simple message informing visitors that your website is "
+"currently undergoing maintenance, or you can add more detailed information "
+"about the updates or changes that you are making. You can also add your "
+"logo, branding, and other design elements to the maintenance page to make "
+"it more visually appealing. The design is on your hand."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:396
+msgid ""
+"Can I exclude specific IP addresses, pages, or categories from Coming Soon "
+"Mode?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:404
+msgid ""
+"Yes, you can allow search bots, IPs, and specific pages or post categories "
+"via slug when the Coming Soon Mode is activated. Simply configure the "
+"exclusions in the plugin settings to grant access to specific entities "
+"during maintenance."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:71
+msgid "Activate coming soon (Maintenance) mode"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:83
+msgid "Access site"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:91
+msgid "None"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:95
+msgid "Admin only"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:99
+msgid "Login user"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:52
+msgid "Saved"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:53
+msgid "Save settings"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:77
+msgid "General"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:81
+msgid "Advanced"
+msgstr ""
