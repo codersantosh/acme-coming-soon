@@ -12,7 +12,8 @@
 		"copy": "node .bin/copy.js",
 		"replace": "node .bin/replace-texts.js",
 		"makejsstring": "node .bin/make-string.js",
-		"makepot": "wp i18n make-pot . languages/acme-coming-soon.pot --skip-js --exclude=src,vendor,node_modules --merge=languages/js.pot",
+		"makepotandmerge": "wp i18n make-pot . languages/acme-coming-soon.pot --skip-js --exclude=src,vendor,node_modules --merge=languages/js.pot",
+		"makepot": "wp i18n make-pot . languages/acme-coming-soon.pot --skip-js --exclude=src,vendor,node_modules",
 		"deploy": "npm-run-all build replace makepot copy"
 	},
 	"browserslist": [
