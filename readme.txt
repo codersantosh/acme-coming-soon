@@ -4,7 +4,7 @@ Tags: maintenance mode, coming soon, page builder, under construction, unavailab
 Requires at least: 5.0
 Tested up to: 6.4.3
 Requires PHP: 5.6.20
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -69,11 +69,19 @@ Temporarily set your maintenance page as the homepage by navigating to WordPress
 
 == Screenshots ==
 
-1. Coming Soon Page
-2. Maintenance Mode Page
-3. Plugin Settings
+1. Dashboard - Getting started
+2. Dashboard - Settings
+3. Dashboard - Settings - General
+4. Dashboard - Settings - Advanced
+5. Edit page - Patterns
+6. Edit page - Patterns selection
+7. Edit page - Customize pattern
+8. Coming soon, maintenance or under construction page
 
 == Changelog ==
+
+= 1.0.1 =
+* Added: Screenshots and other images
 
 = 1.0.0 =
 * Initial release
