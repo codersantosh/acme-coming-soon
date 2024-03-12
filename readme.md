@@ -40,7 +40,7 @@ After installation, activate the plugin through the 'Plugins' menu in WordPress.
 
 ## Inbuilt Patterns for Quick Setup
 
-The 'Coming Soon and Maintenance Mode Page' plugin now comes with a collection of inbuilt Gutenberg Block Patterns that users can easily apply for a quick setup.
+The 'Coming Soon and Maintenance Mode Page' plugin comes with a collection of inbuilt Gutenberg Block Patterns that users can easily apply for a quick setup.
 
 ### Locating and Inserting Patterns
 

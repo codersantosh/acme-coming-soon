@@ -18,6 +18,22 @@ Easily enable or disable Coming Soon (Maintenance) Mode with a click. Activating
 
 The plugin is handy when you are developing a new blog or site, or working on updates and maintenance for an existing site. Redirecting visitors to a specially designed page will ensure a smooth user experience. You can explain the changes and let visitors know when they can expect the site to be fully operational again.
 
+# Inbuilt Patterns for Quick Setup
+
+The 'Coming Soon and Maintenance Mode Page' plugin comes with a collection of inbuilt Gutenberg Block Patterns that users can easily apply for a quick setup.
+
+== Locating and Inserting Patterns ==
+
+- Access the Block Editor:** Open the page or post where you want to use a pattern. Click the "Add Block" button (+) or the "+" sign in the top left corner of the block editor.
+
+- Switch to the Patterns Tab:** In the block inserter window, click the "Patterns" tab. This displays all available patterns.
+
+- Coming Soon and Maintenance:** Within the Patterns tab, find the category labeled "Coming Soon and Maintenance." This categorization ensures a quick and efficient search for the patterns tailored to your needs.
+
+- Insert a Pattern:** Click on one of the pattern to insert it directly into your edit content area. 
+
+- Modify as Needed:** The inserted pattern serves as a starter template. Customize it effortlessly to align with your specific requirements. Modify text, colors, and any other elements to ensure your Coming Soon or Maintenance Mode page reflects your unique style.
+
 = Features =
 
 - Enable or disable Coming Soon (Maintenance) Mode with a simple click.
