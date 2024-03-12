@@ -1,4 +1,4 @@
-=== Coming Soon and Maintenance Mode Page - A simple plugin with unlimited flexibility ===
+=== Coming Soon and Maintenance Mode Page ===
 Contributors: codersantosh
 Tags: maintenance mode, coming soon, page builder, under construction, unavailable page
 Requires at least: 5.0
@@ -8,33 +8,33 @@ Stable tag: 1.0.0
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Craft captivating Coming Soon, Maintenance Mode or Under Construction Page effortlessly with Gutenberg Blocks/Patterns or your favorite page builder.
+Craft captivating Coming Soon, Maintenance Mode or Under Construction Page effortlessly with Gutenberg Blocks/Patterns or your favourite page builder.
 
 == Description ==
 
 Activate the **Coming soon (Maintenance) Mode** to redirect visitors to a specific page while you work on your site. This plugin allows you to create a landing page that informs your visitors that your site is under construction, whether you call it Coming Soon, Under Construction, or Maintenance Mode.
 
-Easily enable or disable Coming Soon (Maintenance) Mode with a click. Activating the Coming soon (Maintenance) Mode will redirect unauthorized visitors to a personalized page. You can craft your page using Gutenberg Blocks/Patterns or your favourite page builder with complete flexibility and all the features available for creating any WordPress page. We recommend including a message, countdown timer, subscription form, contact form, and social media icons to create a better landing page for your under-construction page.
+Easily enable or disable Coming Soon (Maintenance) Mode with a click. Activating the Coming Soon (Maintenance) Mode will redirect unauthorized visitors to a personalized page. You can craft your page using **Gutenberg Blocks/Patterns** or your favourite **page builder** with complete flexibility and all the features available for creating any WordPress page. We recommend including a message, countdown timer, subscription form, contact form, and social media icons to create a better landing page for your under-construction page.
 
 The plugin is handy when you are developing a new blog or site, or working on updates and maintenance for an existing site. Redirecting visitors to a specially designed page will ensure a smooth user experience. You can explain the changes and let visitors know when they can expect the site to be fully operational again.
 
-# Inbuilt Patterns for Quick Setup
+== Inbuilt Patterns for Quick Setup ==
 
 The 'Coming Soon and Maintenance Mode Page' plugin comes with a collection of inbuilt Gutenberg Block Patterns that users can easily apply for a quick setup.
 
-== Locating and Inserting Patterns ==
+= Locating and Inserting Patterns =
 
-- Access the Block Editor:** Open the page or post where you want to use a pattern. Click the "Add Block" button (+) or the "+" sign in the top left corner of the block editor.
+- Access the Block Editor: Open the page or post where you want to use a pattern. Click the "Add Block" button (+) or the "+" sign in the top left corner of the block editor.
 
-- Switch to the Patterns Tab:** In the block inserter window, click the "Patterns" tab. This displays all available patterns.
+- Switch to the Patterns Tab: In the block inserter window, click the "Patterns" tab. This displays all available patterns.
 
-- Coming Soon and Maintenance:** Within the Patterns tab, find the category labeled "Coming Soon and Maintenance." This categorization ensures a quick and efficient search for the patterns tailored to your needs.
+- Coming Soon and Maintenance: Within the Patterns tab, find the category labelled "Coming Soon and Maintenance." This categorization ensures a quick and efficient search for the patterns tailored to your needs.
 
-- Insert a Pattern:** Click on one of the pattern to insert it directly into your edit content area. 
+- Insert a Pattern: Click on one of the patterns to insert it directly into your edit content area. 
 
-- Modify as Needed:** The inserted pattern serves as a starter template. Customize it effortlessly to align with your specific requirements. Modify text, colors, and any other elements to ensure your Coming Soon or Maintenance Mode page reflects your unique style.
+- Modify as Needed: The inserted pattern serves as a starter template. Customize it effortlessly to align with your specific requirements. Modify text, colours, and any other elements to ensure your Coming Soon or Maintenance Mode page reflects your unique style.
 
-= Features =
+== Features ==
 
 - Enable or disable Coming Soon (Maintenance) Mode with a simple click.
 - Redirect unauthorized visitors to a specific page of your choice.
