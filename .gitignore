@@ -4,3 +4,4 @@ acme-coming-soon
 assets/blocks
 /vendor/
 deploy
+git-source
