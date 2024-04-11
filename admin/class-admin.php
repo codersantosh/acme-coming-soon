@@ -126,7 +126,7 @@ class Acme_Coming_Soon_Admin {
 
 		global $wp_roles;
 
-		/* Lovalize */
+		/* Localize */
 		$localize = apply_filters(
 			'acme_coming_soon_admin_localize',
 			array(
