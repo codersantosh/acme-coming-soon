@@ -111,7 +111,6 @@ class Acme_Coming_Soon {
 		require_once ACME_COMING_SOON_PATH . 'public/class-public.php';
 
 		$this->loader = new Acme_Coming_Soon_Loader();
-
 	}
 
 	/**
@@ -128,7 +127,6 @@ class Acme_Coming_Soon {
 		$plugin_i18n = new Acme_Coming_Soon_I18n();
 
 		$this->loader->add_action( 'plugins_loaded', $plugin_i18n, 'load_plugin_textdomain' );
-
 	}
 
 	/**
@@ -144,7 +142,6 @@ class Acme_Coming_Soon {
 
 		/* Register scripts and styles */
 		$this->loader->add_action( 'init', $plugin_include, 'register_scripts_and_styles' );
-
 	}
 
 	/**
@@ -165,6 +162,7 @@ class Acme_Coming_Soon {
 		$this->loader->add_action( 'rest_api_init', $plugin_admin, 'register_settings', 1 );
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'register_settings', 1 );
 
+		$this->loader->add_filter( 'plugin_action_links_acme-coming-soon/acme-coming-soon.php', $plugin_admin, 'add_plugin_links', 10, 4 );
 	}
 
 	/**

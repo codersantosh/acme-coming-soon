@@ -1,36 +1,37 @@
 @import '../prefix-vars.scss';
 @import '../mixins';
 @import '../../node_modules/atrc/build/index.css';
+@import '../../node_modules/atrc/build/wp-admin.css';
 
 #wpbody-content {
-	&>.notice {
-		&:not(:last-of-type) {
-			margin-top: 80px;
-		}
+    &>.notice {
+        &:not(:last-of-type) {
+            margin-top: 80px;
+        }
 
-		+.notice {
-			margin-top: 5px !important;
-		}
-	}
+        +.notice {
+            margin-top: 5px !important;
+        }
+    }
 }
 
 #{$appPrefix} {
 
-	//overriding WordPress default css
-	&-btn {
+    //overriding WordPress default css
+    &-btn {
 
-		&-outln-primary,
-		&-primary {
-			&:hover {
-				color: #fff;
-			}
-		}
+        &-outln-primary,
+        &-primary {
+            &:hover {
+                color: #fff;
+            }
+        }
 
-		&-light,
-		&-secondary {
-			&:hover {
-				color: #000;
-			}
-		}
-	}
+        &-light,
+        &-secondary {
+            &:hover {
+                color: #000;
+            }
+        }
+    }
 }
