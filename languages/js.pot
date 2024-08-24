@@ -3,6 +3,53 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "X-Generator: babel-plugin-makepot\n"
 
+#: src/admin/components/organisms/admin-header.js:24
+msgid "Getting started"
+msgstr ""
+
+#: src/admin/components/organisms/admin-header.js:29
+msgid "Settings"
+msgstr ""
+
+#: src/admin/components/organisms/admin-header.js:47
+msgid "Show all hidden informations, notices and documentations "
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:103
+msgid "Do I need to activate this option?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:108
+msgid ""
+"If you anticipate using the `Maintenance feature` in the future, no need to "
+"activate it."
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:142
+#: src/admin/pages/settings/pages/maintenance.js:438
+msgid "Coming Soon and Maintenance Mode Page settings"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:42
+msgid "Remove all plugin settings when deactivating."
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:66
+#: src/admin/pages/settings/pages/maintenance.js:329
+msgid "Documentation"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:88
+msgid "What does \"Remove all plugin settings when deactivating\" do?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:96
+msgid ""
+"Enabling this option will erase all settings associated with the plugin "
+"from the WordPress options table. However, please note that the selected "
+"page will not be deleted from Pages."
+msgstr ""
+
 #: src/admin/pages/settings/pages/maintenance.js:104
 msgid "Selected roles"
 msgstr ""
@@ -83,10 +130,6 @@ msgstr ""
 msgid "Add slug"
 msgstr ""
 
-#: src/admin/pages/settings/pages/maintenance.js:329
-msgid "Documentation"
-msgstr ""
-
 #: src/admin/pages/settings/pages/maintenance.js:351
 msgid "What is the \"Coming Soon (Maintenance) mode\"?"
 msgstr ""
@@ -142,10 +185,6 @@ msgid ""
 "during maintenance."
 msgstr ""
 
-#: src/admin/pages/settings/pages/maintenance.js:438
-msgid "Coming Soon and Maintenance Mode Page settings"
-msgstr ""
-
 #: src/admin/pages/settings/pages/maintenance.js:71
 msgid "Activate coming soon (Maintenance) mode"
 msgstr ""
@@ -164,4 +203,20 @@ msgstr ""
 
 #: src/admin/pages/settings/pages/maintenance.js:99
 msgid "Login user"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:52
+msgid "Saved"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:53
+msgid "Save settings"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:77
+msgid "General"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:81
+msgid "Advanced"
 msgstr ""
