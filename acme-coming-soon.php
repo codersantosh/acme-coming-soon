@@ -32,7 +32,7 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'ACME_COMING_SOON_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ACME_COMING_SOON_URL', plugin_dir_url( __FILE__ ) );
-define( 'ACME_COMING_SOON_VERSION', '1.0.3' );
+define( 'ACME_COMING_SOON_VERSION', '1.0.4' );
 define( 'ACME_COMING_SOON_PLUGIN_NAME', 'acme-coming-soon' );
 define( 'ACME_COMING_SOON_OPTION_NAME', 'acme_coming_soon_options' );
 
