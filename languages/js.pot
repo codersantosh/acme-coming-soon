@@ -3,18 +3,6 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "X-Generator: babel-plugin-makepot\n"
 
-#: src/admin/components/organisms/admin-header.js:24
-msgid "Getting started"
-msgstr ""
-
-#: src/admin/components/organisms/admin-header.js:29
-msgid "Settings"
-msgstr ""
-
-#: src/admin/components/organisms/admin-header.js:47
-msgid "Show all hidden informations, notices and documentations "
-msgstr ""
-
 #: src/admin/pages/settings/pages/advanced.js:103
 msgid "Do I need to activate this option?"
 msgstr ""
@@ -203,20 +191,4 @@ msgstr ""
 
 #: src/admin/pages/settings/pages/maintenance.js:99
 msgid "Login user"
-msgstr ""
-
-#: src/admin/pages/settings/routes.js:52
-msgid "Saved"
-msgstr ""
-
-#: src/admin/pages/settings/routes.js:53
-msgid "Save settings"
-msgstr ""
-
-#: src/admin/pages/settings/routes.js:77
-msgid "General"
-msgstr ""
-
-#: src/admin/pages/settings/routes.js:81
-msgid "Advanced"
 msgstr ""

@@ -447,6 +447,7 @@ const Settings = () => {
                         allowContainer: true,
                         type: 'fluid',
                         tag: 'section',
+                        className: 'at-p',
                     }}
                     renderContent={<MainContent />}
                     renderSidebar={!mnDocs1 ? <Documentation /> : null}
