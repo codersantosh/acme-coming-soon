@@ -63,10 +63,6 @@ class Acme_Coming_Soon_Include {
 
 		// Only run these methods if they haven't been ran previously.
 		if ( null === $instance ) {
-			/* Query only once */
-			self::$settings    = acme_coming_soon_get_options();
-			self::$white_label = acme_coming_soon_get_white_label();
-
 			$instance = new self();
 		}
 
@@ -81,6 +77,9 @@ class Acme_Coming_Soon_Include {
 	 * @return array|null
 	 */
 	public function get_settings() {
+		if ( null === self::$settings ) {
+			self::$settings = acme_coming_soon_get_options();
+		}
 		return self::$settings;
 	}
 
@@ -91,8 +90,12 @@ class Acme_Coming_Soon_Include {
 	 * @return array|null
 	 */
 	public function get_white_label() {
+		if ( null === self::$white_label ) {
+			self::$white_label = acme_coming_soon_get_white_label();
+		}
 		return self::$white_label;
 	}
+
 	/**
 	 * Register scripts and styles
 	 *

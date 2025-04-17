@@ -9,7 +9,7 @@
  * Plugin Name:       Acme Coming Soon and Maintenance Mode Page
  * Plugin URI:        https://patternswp.com/wp-plugins/coming-soon-and-maintenance-mode-page/
  * Description:       Coming Soon and Maintenance Mode Page simplifies WordPress site management. Easily enable or disable Coming Soon or Maintenance Mode in a toggle, redirecting unauthorized users to a personalized page. Craft your page using Gutenberg Blocks/Patterns or your favorite page builder with complete flexibility and features for creating any WordPress page.
- * Version:           1.0.5
+ * Version:           1.0.6
  * Author:            patternswp
  * Author URI:        https://patternswp.com/
  * License:           GPL-2.0+
@@ -32,7 +32,7 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'ACME_COMING_SOON_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ACME_COMING_SOON_URL', plugin_dir_url( __FILE__ ) );
-define( 'ACME_COMING_SOON_VERSION', '1.0.5' );
+define( 'ACME_COMING_SOON_VERSION', '1.0.6' );
 define( 'ACME_COMING_SOON_PLUGIN_NAME', 'acme-coming-soon' );
 define( 'ACME_COMING_SOON_OPTION_NAME', 'acme_coming_soon_options' );
 
