@@ -109,7 +109,8 @@ vendor/bin/phpcs --report=summary
 ```
 
 Two complete `npm run deploy` runs on the same commit must produce identical ZIP
-SHA-256 values.
+SHA-256 values. `POT-Creation-Date` uses a fixed default epoch so builds leave
+the committed POT files unchanged; set `SOURCE_DATE_EPOCH` to override it.
 
 ## Plugin Check exceptions
 
