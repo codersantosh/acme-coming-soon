@@ -1,10 +1,17 @@
 /* eslint-disable no-console */
 const fs = require( 'fs' );
 const path = require( 'path' );
-const { execFileSync } = require( 'child_process' );
 const gettextParser = require( 'gettext-parser' );
 
 const PROJECT_ROOT = path.resolve( __dirname, '..' );
+
+/*
+ * Stable default for POT-Creation-Date (the last 1.0.x release commit).
+ * Deriving the date from the current HEAD made every commit rewrite the
+ * committed POT files, so builds could never leave a clean working tree.
+ * Set SOURCE_DATE_EPOCH to override it for reproducible release builds.
+ */
+const DEFAULT_SOURCE_DATE_EPOCH = 1744911780;
 const POT_FILES = [
 	path.join( PROJECT_ROOT, 'languages', 'acme-coming-soon.pot' ),
 	path.join( PROJECT_ROOT, 'languages', 'js.pot' ),
@@ -28,23 +35,7 @@ function getSourceDateEpoch() {
 		return epoch;
 	}
 
-	const commitTimestamp = execFileSync(
-		'git',
-		[ 'log', '-1', '--format=%ct' ],
-		{
-			cwd: PROJECT_ROOT,
-			encoding: 'utf8',
-			stdio: [ 'ignore', 'pipe', 'pipe' ],
-		}
-	).trim();
-
-	if ( ! /^\d+$/.test( commitTimestamp ) ) {
-		throw new Error(
-			'Could not determine the latest git commit timestamp.'
-		);
-	}
-
-	return Number( commitTimestamp );
+	return DEFAULT_SOURCE_DATE_EPOCH;
 }
 
 function normalizePot( filePath, epoch ) {
