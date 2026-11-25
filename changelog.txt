@@ -1,0 +1,53 @@
+== Changelog ==
+
+= 1.0.7 =
+* Changed: Raised minimum WordPress requirement to 7.0 and PHP requirement to 8.3
+* Changed: Confirmed compatibility with WordPress 7.0 and 7.1
+* Security: Hardened maintenance-mode access checks and public content boundaries
+* Security: Slug exclusions no longer match query strings or unrelated path fragments
+* Security: IP exclusions now require exact address matches
+* Fixed: Administrator access now uses the correct capability
+* Fixed: Search-bot exclusion now uses the configured setting
+* Fixed: Missing User-Agent requests no longer produce notices
+* Fixed: Invalid or missing maintenance pages now fail closed with HTTP 503
+* Fixed: Maintenance-page detection now uses the queried object
+* Security: Partial settings updates preserve sibling values and validate the merged configuration
+* Security: Closed the core /wp/v2/settings exposure for plugin options
+* Fixed: Pattern registration no longer depends on a loopback HTTP request
+* Fixed: Added IP and slug rows no longer throw a JavaScript error
+* Fixed: Replaced stale translation domains and regenerated translation templates
+* Added: Guarded single-site and multisite uninstall cleanup
+* Added: Automated PHPUnit, WordPress runtime, browser, package, and Plugin Check CI
+* Added: Reproducible release artifacts and protected WordPress.org deployment
+
+= 1.0.6 =
+* Added: WordPress latest compatibility
+* Fixed: Resolved issue with translation function preload
+
+= 1.0.5 =
+* Added: Tested with the latest WordPress
+* Added: RTL support
+* Updated: Plugin URL
+* Updated: Author links
+* Updated: Contributors links
+* Updated: [Atomic CSS](https://github.com/codersantosh/atomic-css)
+* Updated: npm packages
+* Fixed: Admin Notices Hidden by Sticky Header on Plugin Settings Page
+
+= 1.0.4 =
+* Updated: Author
+* Updated: Contributors
+
+= 1.0.3 =
+* Added: Tested with the latest WordPress
+* Added: Plugin link to Settings.
+* Fixed: Settings page UI.
+
+= 1.0.2 =
+* Added: Tested with the latest WordPress
+
+= 1.0.1 =
+* Added: Screenshots and other images
+
+= 1.0.0 =
+* Initial release

@@ -5,7 +5,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 }
 
 /**
- * Fired during plugin deactivation
+ * Fired during plugin deactivation.
  *
  * @link       https://addonspress.com/
  * @since      1.0.0
@@ -15,9 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 /**
- * Fired during plugin deactivation.
- *
- * This class defines all code necessary to run during the plugin's deactivation.
+ * Plugin deactivation cleanup.
  *
  * @since      1.0.0
  * @package    Acme_Coming_Soon
@@ -27,16 +25,65 @@ if ( ! defined( 'ABSPATH' ) ) {
 class Acme_Coming_Soon_Deactivator {
 
 	/**
-	 * Fired during plugin deactivation.
+	 * Delete settings only when the site's deleteAll preference is enabled.
 	 *
-	 * For now just placeholder.
-	 * Removing options, table and all data related to plugin if user select remove data on deactivate.
+	 * @since 1.0.7
+	 * @access public
 	 *
-	 * @since    1.0.0
+	 * @param bool|null $network_deactivating Whether this is a network-wide deactivation.
+	 * @return void
 	 */
-	public static function deactivate() {
+	public static function deactivate( $network_deactivating = null ) {
+		if ( null === $network_deactivating ) {
+			$network_deactivating = is_multisite();
+		}
 
-		if ( acme_coming_soon_get_options( 'deleteAll' ) ) {
+		if ( ! $network_deactivating ) {
+			self::delete_settings_if_requested();
+			return;
+		}
+
+		$offset = 0;
+		do {
+			$sites = get_sites(
+				array(
+					'number'        => 100,
+					'offset'        => $offset,
+					'fields'        => 'ids',
+					'orderby'       => 'id',
+					'order'         => 'ASC',
+					'no_found_rows' => true,
+				)
+			);
+
+			if ( is_wp_error( $sites ) ) {
+				return;
+			}
+
+			foreach ( $sites as $site_id ) {
+				if ( switch_to_blog( (int) $site_id ) ) {
+					self::delete_settings_if_requested();
+					restore_current_blog();
+				}
+			}
+
+			$count   = count( $sites );
+			$offset += 100;
+		} while ( 100 === $count );
+	}
+
+	/**
+	 * Delete the current site's option when requested.
+	 *
+	 * The selected maintenance page is never deleted.
+	 *
+	 * @since 1.0.7
+	 * @access private
+	 * @return void
+	 */
+	private static function delete_settings_if_requested() {
+		$options = get_option( ACME_COMING_SOON_OPTION_NAME, array() );
+		if ( is_array( $options ) && ! empty( $options['deleteAll'] ) ) {
 			delete_option( ACME_COMING_SOON_OPTION_NAME );
 		}
 	}

@@ -7,6 +7,47 @@
  * @author     codersantosh <codersantosh@gmail.com>
  */
 
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+if ( ! function_exists( 'acme_coming_soon_merge_options' ) ) :
+	/**
+	 * Recursively merge settings while replacing list values.
+	 *
+	 * Associative arrays are merged by key. Lists, including empty lists, replace
+	 * the corresponding default or saved value instead of being merged by index.
+	 *
+	 * @since 1.0.7
+	 *
+	 * @param array $base Default or saved settings.
+	 * @param array $update Settings to merge into the base.
+	 * @return array Merged settings.
+	 */
+	function acme_coming_soon_merge_options( $base, $update ) {
+		foreach ( $update as $key => $value ) {
+			if ( isset( $base[ $key ] ) && is_array( $base[ $key ] ) && is_array( $value ) ) {
+				$base_is_list  = array_is_list( $base[ $key ] );
+				$value_is_list = array_is_list( $value );
+
+				if ( ! $base_is_list && ! $value_is_list ) {
+					$base[ $key ] = acme_coming_soon_merge_options( $base[ $key ], $value );
+					continue;
+				}
+
+				if ( ! $base_is_list && $value_is_list && empty( $value ) ) {
+					continue;
+				}
+			}
+
+			$base[ $key ] = $value;
+		}
+
+		return $base;
+	}
+endif;
+
 if ( ! function_exists( 'acme_coming_soon_default_options' ) ) :
 	/**
 	 * Get the Plugin Default Options.
@@ -19,7 +60,7 @@ if ( ! function_exists( 'acme_coming_soon_default_options' ) ) :
 		$default_options = array(
 			'on'        => false,
 			'access'    => 'admin',
-			'exclude'   => array(
+			'exclude'   => array( // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Plugin settings key, not a WP_Query argument.
 				'useRoles'  => array(),
 				'searchBot' => false,
 				'ips'       => array(),
@@ -44,66 +85,209 @@ if ( ! function_exists( 'acme_coming_soon_get_options' ) ) :
 	 * @author     codersantosh <codersantosh@gmail.com>
 	 */
 	function acme_coming_soon_get_options( $key = '' ) {
-		$options         = get_option( ACME_COMING_SOON_OPTION_NAME );
+		$options         = get_option( ACME_COMING_SOON_OPTION_NAME, array() );
 		$default_options = acme_coming_soon_default_options();
 
-		if ( ! empty( $key ) ) {
-			if ( isset( $options[ $key ] ) ) {
-				return $options[ $key ];
-			}
-			return isset( $default_options[ $key ] ) ? $default_options[ $key ] : false;
-		} else {
-			if ( ! is_array( $options ) ) {
-				$options = array();
-			}
-			return array_merge( $default_options, $options );
+		if ( ! is_array( $options ) ) {
+			$options = array();
 		}
+
+		$options = acme_coming_soon_merge_options( $default_options, $options );
+
+		if ( is_scalar( $key ) && '' !== (string) $key ) {
+			return array_key_exists( (string) $key, $options ) ? $options[ (string) $key ] : false;
+		}
+
+		return $options;
+	}
+endif;
+
+if ( ! function_exists( 'acme_coming_soon_get_saved_options' ) ) :
+	/**
+	 * Get only the raw saved settings, without applying defaults.
+	 *
+	 * @since 1.0.7
+	 *
+	 * @return array Saved settings.
+	 */
+	function acme_coming_soon_get_saved_options() {
+		$options = get_option( ACME_COMING_SOON_OPTION_NAME, array() );
+
+		return is_array( $options ) ? $options : array();
+	}
+endif;
+
+if ( ! function_exists( 'acme_coming_soon_can_manage' ) ) :
+	/**
+	 * Check whether the current user may manage the plugin settings.
+	 *
+	 * Network super administrators are allowed to manage settings on multisite.
+	 *
+	 * @since 1.0.7
+	 *
+	 * @return bool Whether the current user can manage settings.
+	 */
+	function acme_coming_soon_can_manage() {
+		return current_user_can( 'manage_options' ) || ( is_multisite() && is_super_admin() );
+	}
+endif;
+
+if ( ! function_exists( 'acme_coming_soon_is_published_page' ) ) :
+	/**
+	 * Check whether an ID identifies a published page.
+	 *
+	 * @since 1.0.7
+	 *
+	 * @param int $page_id Page ID.
+	 * @return bool Whether the page exists and is published.
+	 */
+	function acme_coming_soon_is_published_page( $page_id ) {
+		$page_id = absint( $page_id );
+		if ( ! $page_id ) {
+			return false;
+		}
+
+		$page = get_post( $page_id );
+
+		return $page && 'page' === $page->post_type && 'publish' === $page->post_status;
 	}
 endif;
 
 if ( ! function_exists( 'acme_coming_soon_update_options' ) ) :
 	/**
-	 * Update the Plugin Options.
+	 * Update the Plugin Options without persisting unsaved defaults.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param string|array $key_or_data array of options or single option key.
-	 * @param string       $val value of option key.
-	 *
-	 * @return mixed All Options Array Or Options Value
-	 *
-	 * @author     codersantosh <codersantosh@gmail.com>
+	 * @param string|array $key_or_data Array of options or single option key.
+	 * @param mixed        $val Value of the option key.
+	 * @return bool|WP_Error Whether the requested settings were saved, or an update error.
 	 */
 	function acme_coming_soon_update_options( $key_or_data, $val = '' ) {
+		$saved_options = acme_coming_soon_get_saved_options();
+
 		if ( is_string( $key_or_data ) ) {
-			$options                 = acme_coming_soon_get_options();
-			$options[ $key_or_data ] = $val;
+			$update = array( $key_or_data => $val );
+		} elseif ( is_array( $key_or_data ) ) {
+			$update = $key_or_data;
 		} else {
-			$options = $key_or_data;
+			return false;
 		}
-		update_option( ACME_COMING_SOON_OPTION_NAME, $options );
+
+		$options = acme_coming_soon_merge_options( $saved_options, $update );
+		$result  = update_option( ACME_COMING_SOON_OPTION_NAME, $options );
+
+		if ( is_wp_error( $result ) ) {
+			return $result;
+		}
+
+		if ( $result ) {
+			/**
+			 * Fires after plugin settings have been saved.
+			 *
+			 * Cache integrations can hook this action to purge public caches.
+			 *
+			 * @since 1.0.7
+			 *
+			 * @param array $options Saved settings before any cache hooks run.
+			 */
+			do_action( 'acme_coming_soon_settings_updated', acme_coming_soon_get_saved_options() );
+			return true;
+		}
+
+		// update_option() also returns false when the value did not change.
+		return acme_coming_soon_get_saved_options() === $options;
 	}
 endif;
 
-if ( ! function_exists( 'acme_coming_soon_file_system' ) ) {
+if ( ! function_exists( 'acme_coming_soon_merge_option_update' ) ) :
 	/**
+	 * Atomically merge direct option updates with the latest saved settings.
 	 *
-	 * WordPress file system wrapper
+	 * @since 1.0.7
 	 *
-	 * @since 1.0.0
-	 *
-	 * @return string|WP_Error directory path or WP_Error object if no permission
+	 * @param mixed  $value New option value.
+	 * @param mixed  $old_value Current option value.
+	 * @param string $option Option name.
+	 * @return mixed Merged option value.
 	 */
-	function acme_coming_soon_file_system() {
-		global $wp_filesystem;
-		if ( ! $wp_filesystem ) {
-			require_once ABSPATH . 'wp-admin' . DIRECTORY_SEPARATOR . 'includes' . DIRECTORY_SEPARATOR . 'file.php';
+	function acme_coming_soon_merge_option_update( $value, $old_value, $option ) {
+		// Tolerate callers that provide the option name before the old value.
+		if ( is_string( $old_value ) && ACME_COMING_SOON_OPTION_NAME === $old_value && is_array( $option ) ) {
+			$legacy_option = $option;
+			$option        = $old_value;
+			$old_value     = $legacy_option;
 		}
 
-		WP_Filesystem();
-		return $wp_filesystem;
+		if ( ACME_COMING_SOON_OPTION_NAME !== $option || ! is_array( $value ) ) {
+			return $value;
+		}
+
+		return acme_coming_soon_merge_options( is_array( $old_value ) ? $old_value : array(), $value );
 	}
-}
+endif;
+
+add_filter( 'pre_update_option_' . ACME_COMING_SOON_OPTION_NAME, 'acme_coming_soon_merge_option_update', 10, 3 );
+
+if ( ! function_exists( 'acme_coming_soon_include' ) ) :
+	/**
+	 * Return the shared include helper instance.
+	 *
+	 * @since 1.0.0
+	 * @return Acme_Coming_Soon_Include
+	 */
+	function acme_coming_soon_include() {
+		return Acme_Coming_Soon_Include::get_instance();
+	}
+endif;
+
+if ( ! function_exists( 'acme_coming_soon_admin' ) ) :
+	/**
+	 * Return the admin helper instance.
+	 *
+	 * @since 1.0.0
+	 * @return Acme_Coming_Soon_Admin
+	 */
+	function acme_coming_soon_admin() {
+		return Acme_Coming_Soon_Admin::get_instance();
+	}
+endif;
+
+if ( ! function_exists( 'acme_coming_soon_api_settings' ) ) :
+	/**
+	 * Return the settings REST controller instance.
+	 *
+	 * @since 1.0.0
+	 * @return Acme_Coming_Soon_Api_Settings
+	 */
+	function acme_coming_soon_api_settings() {
+		return Acme_Coming_Soon_Api_Settings::get_instance();
+	}
+endif;
+
+if ( ! function_exists( 'acme_coming_soon_public' ) ) :
+	/**
+	 * Return the public helper instance.
+	 *
+	 * @since 1.0.0
+	 * @return Acme_Coming_Soon_Public
+	 */
+	function acme_coming_soon_public() {
+		return Acme_Coming_Soon_Public::get_instance();
+	}
+endif;
+
+if ( ! function_exists( 'acme_coming_soon_patterns' ) ) :
+	/**
+	 * Return the block-pattern helper instance.
+	 *
+	 * @since 1.0.0
+	 * @return Acme_Coming_Soon_Patterns
+	 */
+	function acme_coming_soon_patterns() {
+		return Acme_Coming_Soon_Patterns::get_instance();
+	}
+endif;
 
 if ( ! function_exists( 'acme_coming_soon_parse_changelog' ) ) {
 
@@ -114,31 +298,44 @@ if ( ! function_exists( 'acme_coming_soon_parse_changelog' ) ) {
 	 * @return string
 	 */
 	function acme_coming_soon_parse_changelog() {
+		$changelog_file = apply_filters( 'acme_coming_soon_changelog_file', ACME_COMING_SOON_PATH . 'changelog.txt' );
 
-		$wp_filesystem = acme_coming_soon_file_system();
-
-		$changelog_file = apply_filters( 'acme_coming_soon_changelog_file', ACME_COMING_SOON_PATH . 'readme.txt' );
-
-		/*Check if the changelog file exists and is readable.*/
-		if ( ! $changelog_file || ! is_readable( $changelog_file ) ) {
+		if ( ! is_string( $changelog_file ) || ! is_readable( $changelog_file ) ) {
 			return '';
 		}
 
-		$content = $wp_filesystem->get_contents( $changelog_file );
-
-		if ( ! $content ) {
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Read the bundled local changelog directly.
+		$content = file_get_contents( $changelog_file );
+		if ( false === $content || '' === trim( $content ) ) {
 			return '';
 		}
 
-		$matches   = null;
-		$regexp    = '~==\s*Changelog\s*==(.*)($)~Uis';
+		$sections = preg_split( '/^\s*={1,3}\s*(.+?)\s*={1,3}\s*$/m', $content, -1, PREG_SPLIT_DELIM_CAPTURE );
+		if ( false === $sections || count( $sections ) < 3 ) {
+			return wp_kses_post( $content );
+		}
+
 		$changelog = '';
+		$count     = count( $sections );
 
-		if ( preg_match( $regexp, $content, $matches ) ) {
-			$changes = explode( '\r\n', trim( $matches[1] ) );
+		for ( $index = 1; $index < $count; $index += 2 ) {
+			$version = trim( $sections[ $index ] );
+			$body    = isset( $sections[ $index + 1 ] ) ? trim( $sections[ $index + 1 ] ) : '';
 
-			foreach ( $changes as $index => $line ) {
-				$changelog .= wp_kses_post( preg_replace( '~(=\s*Version\s*(\d+(?:\.\d+)+)\s*=|$)~Uis', '', $line ) );
+			if ( '' === $version || '' === $body ) {
+				continue;
+			}
+
+			$changelog .= '<h3>' . esc_html( $version ) . '</h3>';
+			$lines      = preg_split( '/\r\n|\r|\n/', $body );
+
+			if ( false !== $lines ) {
+				foreach ( $lines as $line ) {
+					$line = trim( $line );
+					if ( '' !== $line ) {
+						$changelog .= '<p>' . esc_html( $line ) . '</p>';
+					}
+				}
 			}
 		}
 
@@ -387,12 +584,98 @@ if ( ! function_exists( 'acme_coming_soon_sanitize_ip' ) ) {
 	 * @return string Sanitized IP address or empty string if invalid.
 	 */
 	function acme_coming_soon_sanitize_ip( $ip ) {
-		$sanitized_ip = filter_var( $ip, FILTER_VALIDATE_IP );
-
-		if ( false !== $sanitized_ip ) {
-			return $sanitized_ip;
-		} else {
+		if ( ! is_scalar( $ip ) ) {
 			return '';
 		}
+
+		$sanitized_ip = filter_var( (string) $ip, FILTER_VALIDATE_IP );
+
+		return false === $sanitized_ip ? '' : $sanitized_ip;
 	}
 }
+
+if ( ! function_exists( 'acme_coming_soon_sanitize_roles' ) ) :
+	/**
+	 * Keep only registered role IDs from a list of roles.
+	 *
+	 * @since 1.0.7
+	 *
+	 * @param mixed $roles Role IDs.
+	 * @return array Sanitized role IDs.
+	 */
+	function acme_coming_soon_sanitize_roles( $roles ) {
+		if ( ! is_array( $roles ) ) {
+			return array();
+		}
+
+		$available_roles = wp_roles()->get_names();
+		$sanitized_roles = array();
+
+		foreach ( $roles as $role ) {
+			if ( ! is_scalar( $role ) ) {
+				continue;
+			}
+
+			$role = sanitize_text_field( wp_unslash( (string) $role ) );
+			if ( '' !== $role && isset( $available_roles[ $role ] ) && ! in_array( $role, $sanitized_roles, true ) ) {
+				$sanitized_roles[] = $role;
+			}
+		}
+
+		return $sanitized_roles;
+	}
+endif;
+
+if ( ! function_exists( 'acme_coming_soon_sanitize_path_slug' ) ) :
+	/**
+	 * Normalize a URL path for storage as a slug exclusion.
+	 *
+	 * Query strings, fragments, leading/trailing slashes and duplicate separators
+	 * are removed. Parent-directory segments are rejected.
+	 *
+	 * @since 1.0.7
+	 *
+	 * @param mixed $slug URL path or slug.
+	 * @return string Normalized path, or an empty string when invalid.
+	 */
+	function acme_coming_soon_sanitize_path_slug( $slug ) {
+		if ( ! is_scalar( $slug ) ) {
+			return '';
+		}
+
+		$slug  = wp_unslash( (string) $slug );
+		$parts = wp_parse_url( $slug );
+		if ( false === $parts ) {
+			return '';
+		}
+
+		if ( is_array( $parts ) ) {
+			if ( isset( $parts['scheme'], $parts['host'] ) && ! isset( $parts['path'] ) ) {
+				return '';
+			}
+			$slug = isset( $parts['path'] ) ? $parts['path'] : $slug;
+		}
+
+		$slug     = rawurldecode( $slug );
+		$slug     = str_replace( '\\', '/', $slug );
+		$segments = explode( '/', $slug );
+		$path     = array();
+
+		foreach ( $segments as $segment ) {
+			$segment = trim( $segment );
+			if ( '' === $segment || '.' === $segment ) {
+				continue;
+			}
+			if ( '..' === $segment ) {
+				return '';
+			}
+
+			$segment = sanitize_title( $segment );
+			if ( '' !== $segment ) {
+				$path[] = $segment;
+			}
+		}
+
+		return implode( '/', $path );
+	}
+endif;

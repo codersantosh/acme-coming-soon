@@ -1,4 +1,9 @@
 <?php // phpcs:ignore Class file names should be based on the class name with "class-" prepended.
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
 /**
  * The admin-specific functionality of the plugin.
  *
@@ -10,10 +15,9 @@
  */
 
 /**
- * The admin-specific functionality of the plugin.
+ * Admin menus, resources and settings registration.
  *
- * Define and execute the hooks for overall functionalities of the plugin and add the admin end like loading resources and defining settings.
- *
+ * @since      1.0.0
  * @package    Acme_Coming_Soon
  * @subpackage Acme_Coming_Soon/Admin
  * @author     codersantosh <codersantosh@gmail.com>
@@ -23,46 +27,54 @@ class Acme_Coming_Soon_Admin {
 	/**
 	 * Menu info.
 	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @var      array    $menu_info    Admin menu information.
+	 * @since 1.0.0
+	 * @access private
+	 * @var array
 	 */
 	private $menu_info;
 
 	/**
 	 * Gets an instance of this object.
-	 * Prevents duplicate instances which avoid artefacts and improves performance.
 	 *
-	 * @static
-	 * @access public
-	 * @return object
 	 * @since 1.0.0
+	 * @access public
+	 * @return Acme_Coming_Soon_Admin
 	 */
 	public static function get_instance() {
-		// Store the instance locally to avoid private static replication.
 		static $instance = null;
 
-		// Only run these methods if they haven't been ran previously.
 		if ( null === $instance ) {
-
 			$instance = new self();
 		}
 
-		// Always return the instance.
 		return $instance;
 	}
 
 	/**
-	 * Add Admin Page Menu page.
+	 * Get the filtered admin menu information.
 	 *
+	 * @since 1.0.7
+	 * @access private
+	 * @return array Menu information.
+	 */
+	private function get_menu_info() {
+		$white_label = acme_coming_soon_include()->get_white_label();
+
+		return isset( $white_label['admin_menu_page'] ) && is_array( $white_label['admin_menu_page'] ) ? $white_label['admin_menu_page'] : array();
+	}
+
+	/**
+	 * Add the admin menu page.
+	 *
+	 * @since 1.0.0
 	 * @access public
-	 *
-	 * @since    1.0.0
+	 * @return void
 	 */
 	public function add_admin_menu() {
-
-		$white_label     = acme_coming_soon_include()->get_white_label();
-		$this->menu_info = $white_label['admin_menu_page'];
+		$this->menu_info = $this->get_menu_info();
+		if ( empty( $this->menu_info['menu_slug'] ) ) {
+			return;
+		}
 
 		add_menu_page(
 			$this->menu_info['page_title'],
@@ -71,37 +83,37 @@ class Acme_Coming_Soon_Admin {
 			$this->menu_info['menu_slug'],
 			array( $this, 'add_setting_root_div' ),
 			$this->menu_info['icon_url'],
-			$this->menu_info['position'],
+			$this->menu_info['position']
 		);
 	}
 
 	/**
-	 * Check if current menu page.
+	 * Check whether the current screen is the plugin settings page.
 	 *
+	 * @since 1.0.7
 	 * @access public
-	 *
-	 * @since    1.0.0
-	 * @return boolean ture if current menu page else false.
+	 * @return bool
 	 */
 	public function is_menu_page() {
-		$screen              = get_current_screen();
-		$admin_scripts_bases = array( 'toplevel_page_' . ACME_COMING_SOON_PLUGIN_NAME );
-		if ( ! ( isset( $screen->base ) && in_array( $screen->base, $admin_scripts_bases, true ) ) ) {
+		$menu_info = $this->get_menu_info();
+		if ( empty( $menu_info['menu_slug'] ) ) {
 			return false;
 		}
-		return true;
+
+		$screen = get_current_screen();
+		return $screen && isset( $screen->base ) && 'toplevel_page_' . $menu_info['menu_slug'] === $screen->base;
 	}
 
 	/**
-	 * Add class "at-has-hdr-stky".
+	 * Add the sticky-header body class on the settings screen.
 	 *
+	 * @since 1.0.0
 	 * @access public
-	 * @since    1.0.0
-	 * @param string $classes  a space-separated string of class names.
-	 * @return string $classes with added class if confition meet.
+	 *
+	 * @param string $classes Space-separated body classes.
+	 * @return string Filtered body classes.
 	 */
 	public function add_has_sticky_header( $classes ) {
-
 		if ( ! $this->is_menu_page() ) {
 			return $classes;
 		}
@@ -110,58 +122,56 @@ class Acme_Coming_Soon_Admin {
 	}
 
 	/**
-	 * Add Root Div For React.
+	 * Add the React root element.
 	 *
+	 * @since 1.0.0
 	 * @access public
-	 *
-	 * @since    1.0.0
+	 * @return void
 	 */
 	public function add_setting_root_div() {
+		if ( ! acme_coming_soon_can_manage() ) {
+			wp_die( esc_html__( 'You are not allowed to manage these settings.', 'acme-coming-soon' ), '', array( 'response' => 403 ) );
+		}
+
 		echo '<div id="' . esc_attr( ACME_COMING_SOON_PLUGIN_NAME ) . '"></div>';
 	}
 
 	/**
-	 * Register the CSS/JavaScript Resources for the admin area.
+	 * Register admin CSS and JavaScript resources.
 	 *
+	 * @since 1.0.0
 	 * @access public
-	 * Use Condition to Load it Only When it is Necessary
-	 *
-	 * @since    1.0.0
+	 * @return void
 	 */
 	public function enqueue_resources() {
-
-		if ( ! $this->is_menu_page() ) {
+		if ( ! $this->is_menu_page() || ! $this->has_required_build_assets() ) {
 			return;
 		}
 
-		/* Atomic CSS */
-		wp_enqueue_style( 'atomic' );
-		wp_style_add_data( 'atomic', 'rtl', 'replace' );
+		wp_enqueue_style( 'acme-coming-soon-atomic' );
+		wp_style_add_data( 'acme-coming-soon-atomic', 'rtl', 'replace' );
 
-		/*Scripts dependency files*/
-		$deps_file = ACME_COMING_SOON_PATH . 'build/admin/admin.asset.php';
-
-		/*Fallback dependency array*/
 		$dependency = array();
 		$version    = ACME_COMING_SOON_VERSION;
+		$deps_file  = ACME_COMING_SOON_PATH . 'build/admin/admin.asset.php';
 
-		/*Set dependency and version*/
-		if ( file_exists( $deps_file ) ) {
-			$deps_file  = require $deps_file;
-			$dependency = $deps_file['dependencies'];
-			$version    = $deps_file['version'];
+		if ( is_readable( $deps_file ) ) {
+			$asset = require $deps_file;
+			if ( is_array( $asset ) && isset( $asset['dependencies'] ) && is_array( $asset['dependencies'] ) ) {
+				$dependency = $asset['dependencies'];
+				if ( isset( $asset['version'] ) ) {
+					$version = $asset['version'];
+				}
+			}
 		}
 
 		wp_enqueue_script( ACME_COMING_SOON_PLUGIN_NAME, ACME_COMING_SOON_URL . 'build/admin/admin.js', $dependency, $version, true );
-
-		wp_enqueue_style( 'google-fonts-open-sans', ACME_COMING_SOON_URL . 'assets/library/fonts/open-sans.css', '', $version );
+		wp_enqueue_style( 'acme-coming-soon-google-fonts-open-sans', ACME_COMING_SOON_URL . 'assets/library/fonts/open-sans.css', array(), $version );
 		wp_enqueue_style( ACME_COMING_SOON_PLUGIN_NAME, ACME_COMING_SOON_URL . 'build/admin/admin.css', array( 'wp-components' ), $version );
 		wp_style_add_data( ACME_COMING_SOON_PLUGIN_NAME, 'rtl', 'replace' );
 
-		global $wp_roles;
-
-		/* Localize */
-		$localize = apply_filters(
+		$menu_info = $this->get_menu_info();
+		$localize  = apply_filters(
 			'acme_coming_soon_admin_localize',
 			array(
 				'version'              => $version,
@@ -169,10 +179,10 @@ class Acme_Coming_Soon_Admin {
 				'nonce'                => wp_create_nonce( 'wp_rest' ),
 				'store'                => 'acme-coming-soon',
 				'rest_url'             => get_rest_url(),
-				'base_url'             => menu_page_url( $this->menu_info['menu_slug'], false ),
+				'base_url'             => menu_page_url( $menu_info['menu_slug'], false ),
 				'ACME_COMING_SOON_URL' => ACME_COMING_SOON_URL,
 				'white_label'          => acme_coming_soon_include()->get_white_label(),
-				'userRoles'            => $wp_roles->get_names(),
+				'userRoles'            => wp_roles()->get_names(),
 			)
 		);
 
@@ -181,17 +191,41 @@ class Acme_Coming_Soon_Admin {
 	}
 
 	/**
-	 * Get settings schema
-	 * Schema: http://json-schema.org/draft-04/schema#
+	 * Check whether the required compiled admin assets exist.
 	 *
+	 * @since 1.0.7
+	 * @access private
+	 * @return bool Whether the build assets are available.
+	 */
+	private function has_required_build_assets() {
+		return is_readable( ACME_COMING_SOON_PATH . 'build/admin/admin.js' ) && is_readable( ACME_COMING_SOON_PATH . 'build/admin/admin.css' );
+	}
+
+	/**
+	 * Display a notice when compiled admin assets are missing.
+	 *
+	 * @since 1.0.7
 	 * @access public
+	 * @return void
+	 */
+	public function display_missing_build_notice() {
+		if ( ! $this->is_menu_page() || ! acme_coming_soon_can_manage() || $this->has_required_build_assets() ) {
+			return;
+		}
+
+		echo '<div class="notice notice-error"><p>';
+		echo esc_html__( 'The Acme Coming Soon admin build is missing. Rebuild the plugin assets before configuring maintenance mode.', 'acme-coming-soon' );
+		echo '</p></div>';
+	}
+
+	/**
+	 * Get the settings JSON schema.
 	 *
-	 * @since 1.0.0
-	 *
-	 * @return array settings schema for this plugin.
+	 * @since 1.0.7
+	 * @access public
+	 * @return array Settings schema.
 	 */
 	public function get_settings_schema() {
-
 		$setting_properties = apply_filters(
 			'acme_coming_soon_setting_properties',
 			array(
@@ -200,19 +234,16 @@ class Acme_Coming_Soon_Admin {
 				),
 				'access'    => array(
 					'type' => 'string',
-					'enum' => array(
-						'',
-						'login',
-						'admin',
-						'roles',
-					),
+					'enum' => array( '', 'login', 'admin', 'roles' ),
 				),
-				'exclude'   => array(
-					'type'       => 'object',
-					'properties' => array(
+				'exclude'   => array( // phpcs:ignore WordPressVIPMinimum.Performance.WPQueryParams.PostNotIn_exclude -- Plugin settings key, not a WP_Query argument.
+					'type'                 => 'object',
+					'additionalProperties' => false,
+					'properties'           => array(
 						'useRoles'  => array(
-							'type'  => 'array',
-							'items' => array( 'type' => 'string' ),
+							'type'              => 'array',
+							'items'             => array( 'type' => 'string' ),
+							'sanitize_callback' => 'acme_coming_soon_sanitize_roles',
 						),
 						'searchBot' => array(
 							'type' => 'boolean',
@@ -227,87 +258,63 @@ class Acme_Coming_Soon_Admin {
 						'slugs'     => array(
 							'type'  => 'array',
 							'items' => array(
-								'type' => 'string',
+								'type'              => 'string',
+								'sanitize_callback' => 'acme_coming_soon_sanitize_path_slug',
 							),
 						),
 					),
 				),
 				'template'  => array(
-					'type' => 'integer',
+					'type'    => 'integer',
+					'minimum' => 0,
 				),
 				'deleteAll' => array(
 					'type' => 'boolean',
 				),
-			),
+			)
 		);
 
 		return array(
-			'type'       => 'object',
-			'properties' => $setting_properties,
+			'type'                 => 'object',
+			'additionalProperties' => false,
+			'properties'           => $setting_properties,
 		);
 	}
 
 	/**
-	 * Register settings.
-	 * Common callback function of rest_api_init and admin_init
-	 * Schema: http://json-schema.org/draft-04/schema#
+	 * Register the plugin option without exposing it through core REST settings.
 	 *
-	 * Add your own settings fields here
-	 *
+	 * @since 1.0.7
 	 * @access public
-	 * @since 1.0.0
-	 *
 	 * @return void
 	 */
 	public function register_settings() {
-		$defaults = acme_coming_soon_default_options();
-
 		register_setting(
 			'acme_coming_soon_setting_group',
 			ACME_COMING_SOON_OPTION_NAME,
 			array(
 				'type'         => 'object',
-				'default'      => $defaults,
-				'show_in_rest' => array(
-					'schema' => $this->get_settings_schema(),
-				),
+				'default'      => acme_coming_soon_default_options(),
+				'show_in_rest' => false,
 			)
 		);
 	}
 
 	/**
-	 * Add plugin menu items.
+	 * Add the Settings action link.
 	 *
+	 * @since 1.0.0
 	 * @access public
 	 *
-	 * @since 1.0.0
-	 * @param string[] $actions     An array of plugin action links. By default this can include
-	 *                              'activate', 'deactivate', and 'delete'. With Multisite active
-	 *                              this can also include 'network_active' and 'network_only' items.
-	 * @param string   $plugin_file Path to the plugin file relative to the plugins directory.
-	 * @param array    $plugin_data An array of plugin data. See get_plugin_data()
-	 *                              and the {@see 'plugin_row_meta'} filter for the list
-	 *                              of possible values.
-	 * @param string   $context     The plugin context. By default this can include 'all',
-	 *                              'active', 'inactive', 'recently_activated', 'upgrade',
-	 *                              'mustuse', 'dropins', and 'search'.
-	 * @return array settings schema for this plugin.
+	 * @param array $actions Plugin action links.
+	 * @return array Filtered action links.
 	 */
-	public function add_plugin_links( $actions, $plugin_file, $plugin_data, $context ) {
-		$actions[] = '<a href="' . esc_url( menu_page_url( $this->menu_info['menu_slug'], false ) ) . '">' . esc_html__( 'Settings', 'acme-coming-soon' ) . '</a>';
-		return $actions;
-	}
-}
+	public function add_plugin_links( $actions ) {
+		$menu_info = $this->get_menu_info();
+		if ( acme_coming_soon_can_manage() && ! empty( $menu_info['menu_slug'] ) ) {
+			$actions[] = '<a href="' . esc_url( menu_page_url( $menu_info['menu_slug'], false ) ) . '">' . esc_html__( 'Settings', 'acme-coming-soon' ) . '</a>';
+		}
 
-if ( ! function_exists( 'acme_coming_soon_admin' ) ) {
-	/**
-	 * Return instance of  Acme_Coming_Soon_Admin class
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Acme_Coming_Soon_Admin
-	 */
-	function acme_coming_soon_admin() {
-		return Acme_Coming_Soon_Admin::get_instance();
+		return $actions;
 	}
 }

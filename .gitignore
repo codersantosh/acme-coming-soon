@@ -1,7 +1,28 @@
-.sass-cache
-node_modules/
-acme-coming-soon
-assets/blocks
+# Dependencies and generated release output.
+/node_modules/
+/build/
+/deploy/
 /vendor/
-deploy
-git-source
+
+# Local release staging.
+/acme-coming-soon/
+/assets/blocks/
+/git-source/
+/.sass-cache/
+
+# PHP and JavaScript test caches.
+/.phpunit.cache/
+/.phpunit.result.cache
+/phpunit.xml
+.phpunit.result.cache
+.phpunit.cache/
+__pycache__/
+*.py[cod]
+
+# Editor and operating-system files.
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# Keep composer.lock trackable.

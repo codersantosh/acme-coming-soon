@@ -1,0 +1,46 @@
+<?xml version="1.0"?>
+<ruleset name="Acme Coming Soon">
+	<description>WordPress coding standard for Acme Coming Soon.</description>
+
+	<file>.</file>
+	<exclude-pattern>build/</exclude-pattern>
+	<exclude-pattern>deploy/</exclude-pattern>
+	<exclude-pattern>assets/</exclude-pattern>
+	<exclude-pattern>node_modules/</exclude-pattern>
+	<exclude-pattern>vendor/</exclude-pattern>
+	<exclude-pattern>tests/</exclude-pattern>
+	<exclude-pattern>.github/</exclude-pattern>
+	<exclude-pattern>languages/</exclude-pattern>
+	<exclude-pattern>*\.min\.css</exclude-pattern>
+	<exclude-pattern>*\.min\.js</exclude-pattern>
+
+	<arg name="extensions" value="php"/>
+	<arg name="basepath" value="."/>
+	<arg name="colors"/>
+	<arg value="sp"/>
+
+	<rule ref="WordPress"/>
+
+	<rule ref="WordPress.Files.FileName">
+		<exclude-pattern>tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.FileComment">
+		<exclude-pattern>tests/</exclude-pattern>
+	</rule>
+	<rule ref="Squiz.Commenting.ClassComment">
+		<exclude-pattern>tests/</exclude-pattern>
+	</rule>
+
+	<rule ref="PHPCompatibilityWP"/>
+	<config name="testVersion" value="8.3-"/>
+
+	<rule ref="WordPress.NamingConventions.PrefixAllGlobals">
+		<properties>
+			<property name="prefixes" type="array">
+				<element value="acme_coming_soon"/>
+				<element value="Acme_Coming_Soon"/>
+				<element value="ACME_COMING_SOON"/>
+			</property>
+		</properties>
+	</rule>
+</ruleset>

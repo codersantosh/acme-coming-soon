@@ -7,8 +7,6 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Add design WordPress Gutenberg Block patterns.
  *
- * A class definition that includes attributes and functions used for adding block patterns.
- *
  * @link       https://addonspress.com/
  * @since      1.0.0
  *
@@ -17,9 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
  */
 
 /**
- * Add design WordPress Gutenberg Block patterns.
- *
- * A class definition that includes attributes and functions used for adding block patterns.
+ * Register the bundled block patterns and their category.
  *
  * @since      1.0.0
  * @package    Acme_Coming_Soon
@@ -30,46 +26,45 @@ class Acme_Coming_Soon_Patterns {
 
 	/**
 	 * Gets an instance of this object.
-	 * Prevents duplicate instances which avoid artefacts and improves performance.
 	 *
-	 * @static
-	 * @access public
-	 * @return object
 	 * @since 1.0.0
+	 * @access public
+	 * @return Acme_Coming_Soon_Patterns
 	 */
 	public static function get_instance() {
-		// Store the instance locally to avoid private static replication.
 		static $instance = null;
 
-		// Only run these methods if they haven't been ran previously.
 		if ( null === $instance ) {
-
 			$instance = new self();
 		}
 
-		// Always return the instance.
 		return $instance;
 	}
 
 	/**
 	 * Initialize the class and set up actions.
 	 *
+	 * @since 1.0.7
 	 * @access public
 	 * @return void
 	 */
 	public function run() {
-
-		add_action( 'admin_init', array( $this, 'register_block_pattern_category' ) );
-		add_action( 'admin_init', array( $this, 'register_patterns' ) );
+		add_action( 'init', array( $this, 'register_block_pattern_category' ) );
+		add_action( 'init', array( $this, 'register_patterns' ) );
 	}
 
 	/**
-	 * Register pattern category.
+	 * Register the pattern category.
 	 *
+	 * @since 1.0.7
 	 * @access public
 	 * @return void
 	 */
 	public function register_block_pattern_category() {
+		if ( ! function_exists( 'register_block_pattern_category' ) ) {
+			return;
+		}
+
 		register_block_pattern_category(
 			'pwp-coming-soon-and-maintenance',
 			array(
@@ -79,54 +74,104 @@ class Acme_Coming_Soon_Patterns {
 	}
 
 	/**
-	 * Get patterns data.
+	 * Load and register patterns from the bundled JSON file.
 	 *
+	 * @since 1.0.7
 	 * @access public
 	 * @return void
 	 */
 	public function register_patterns() {
-		$pattern_api_url = ACME_COMING_SOON_URL . 'includes/json/patterns.json';
-		$response        = wp_remote_get( $pattern_api_url );
-		if ( ! is_wp_error( $response ) ) {
-			$patterns = json_decode( wp_remote_retrieve_body( $response ), true );
-			if ( $patterns ) {
-				foreach ( $patterns as $pattern ) {
-					$this->register_block_pattern( $pattern );
-				}
+		if ( ! function_exists( 'register_block_pattern' ) ) {
+			return;
+		}
+
+		/**
+		 * Filters the local block-pattern data file.
+		 *
+		 * @since 1.0.7
+		 *
+		 * @param string $patterns_file Absolute path to a JSON file.
+		 */
+		$patterns_file = apply_filters( 'acme_coming_soon_patterns_file', ACME_COMING_SOON_PATH . 'includes/json/patterns.json' );
+		if ( ! is_string( $patterns_file ) || ! is_readable( $patterns_file ) ) {
+			return;
+		}
+
+		// phpcs:ignore WordPress.WP.AlternativeFunctions.file_get_contents_file_get_contents -- Read the bundled local pattern file directly.
+		$contents = file_get_contents( $patterns_file );
+		if ( false === $contents || '' === trim( $contents ) ) {
+			return;
+		}
+
+		try {
+			$patterns = json_decode( $contents, true, 512, JSON_THROW_ON_ERROR );
+		} catch ( JsonException ) {
+			return;
+		}
+
+		if ( ! is_array( $patterns ) || ! array_is_list( $patterns ) ) {
+			return;
+		}
+
+		/**
+		 * Filters the bundled block-pattern definitions.
+		 *
+		 * Each definition must contain a non-empty slug, title.rendered and
+		 * pattern_content string. Definitions are validated again after filtering.
+		 *
+		 * @since 1.0.7
+		 *
+		 * @param array $patterns Block-pattern definitions.
+		 */
+		$patterns = apply_filters( 'acme_coming_soon_patterns', $patterns );
+		if ( ! is_array( $patterns ) || ! array_is_list( $patterns ) ) {
+			return;
+		}
+
+		foreach ( $patterns as $pattern ) {
+			if ( $this->is_valid_pattern( $pattern ) ) {
+				$this->register_block_pattern( $pattern );
 			}
 		}
 	}
 
 	/**
-	 * Register an individual block pattern
+	 * Validate a block-pattern definition.
 	 *
-	 * @since    1.0.0
-	 * @access   private
-	 * @param    array $pattern Single block pattern.
+	 * @since 1.0.7
+	 * @access private
+	 *
+	 * @param mixed $pattern Pattern definition.
+	 * @return bool Whether the definition has the required shape.
+	 */
+	private function is_valid_pattern( $pattern ) {
+		return is_array( $pattern )
+			&& isset( $pattern['slug'], $pattern['title'], $pattern['pattern_content'] )
+			&& is_string( $pattern['slug'] ) && '' !== trim( $pattern['slug'] )
+			&& is_array( $pattern['title'] )
+			&& isset( $pattern['title']['rendered'] )
+			&& is_string( $pattern['title']['rendered'] ) && '' !== trim( $pattern['title']['rendered'] )
+			&& is_string( $pattern['pattern_content'] ) && '' !== trim( $pattern['pattern_content'] );
+	}
+
+	/**
+	 * Register an individual block pattern.
+	 *
+	 * @since 1.0.7
+	 * @access private
+	 *
+	 * @param array $pattern Single block pattern.
 	 * @return void
 	 */
 	private function register_block_pattern( $pattern ) {
 		register_block_pattern(
 			sanitize_title( 'pwp-' . $pattern['slug'] ),
 			array(
-				'title'      => $pattern['title']['rendered'],
+				'title'      => sanitize_text_field( $pattern['title']['rendered'] ),
 				'content'    => $pattern['pattern_content'],
 				'categories' => array( 'pwp-coming-soon-and-maintenance' ),
 			)
 		);
-	}
-}
-
-if ( ! function_exists( 'acme_coming_soon_patterns' ) ) {
-	/**
-	 * Return instance of  Acme_Coming_Soon_Patterns class
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Acme_Coming_Soon_Patterns
-	 */
-	function acme_coming_soon_patterns() {
-		return Acme_Coming_Soon_Patterns::get_instance();
 	}
 }
 

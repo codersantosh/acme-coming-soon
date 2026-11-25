@@ -1,3 +1,4 @@
+/* global AcmeComingSoonLocalize */
 /* WordPress */
 import { useContext } from '@wordpress/element';
 
@@ -5,64 +6,64 @@ import { useContext } from '@wordpress/element';
 import { cloneDeep } from 'lodash';
 
 /*Atrc*/
-import { AtrcLandingTemplate1 } from 'atrc';
+import AtrcLandingTemplate1 from 'atrc/build/templates/landing/template-1';
 
 /* Inbuilt */
 import { AtrcReduxContextData } from '../../routes';
 
 /* Local */
 const Landing = () => {
-	const data = useContext(AtrcReduxContextData);
-	const { lsSettings, lsUpdateSetting, lsSaveSettings } = data;
+	const data = useContext( AtrcReduxContextData );
+	const { lsSettings, lsSaveSettings } = data;
 	const { white_label: dynamicWhitelabel } = AcmeComingSoonLocalize;
 	const { dashboard, landingPage } = dynamicWhitelabel;
 
 	const whiteLabel = {};
 	/* Notice */
-	if (dashboard.notice) {
+	if ( dashboard.notice ) {
 		whiteLabel.notice = {
 			on: lsSettings.gs1,
 			text: dashboard.notice,
 			onRemove: () => {
-				const localStorageClone = cloneDeep(lsSettings);
-				localStorageClone.gs1 = !localStorageClone.gs1;
-				lsSaveSettings(localStorageClone);
+				const localStorageClone = cloneDeep( lsSettings );
+				localStorageClone.gs1 = ! localStorageClone.gs1;
+				lsSaveSettings( localStorageClone );
 			},
 		};
 	}
 
-	if (landingPage) {
-		if (landingPage.banner) {
+	if ( landingPage ) {
+		if ( landingPage.banner ) {
 			/*Banner */
 			whiteLabel.banner = landingPage.banner;
 		}
-		if (landingPage.identity) {
+		if ( landingPage.identity ) {
 			/*Identity */
 			whiteLabel.identity = landingPage.identity;
 		}
-		if (landingPage.contact) {
+		if ( landingPage.contact ) {
 			/*Contact */
 			whiteLabel.contact = landingPage.contact;
 		}
-		if (landingPage.bannerColumns) {
+		if ( landingPage.bannerColumns ) {
 			/*Banner columns */
 			whiteLabel.bannerColumns = landingPage.bannerColumns;
 		}
-		if (landingPage.normalColumns) {
+		if ( landingPage.normalColumns ) {
 			/*Normal columns */
 			whiteLabel.normalColumns = landingPage.normalColumns;
 		}
-		if (landingPage.topicLinks) {
+		if ( landingPage.topicLinks ) {
 			/*Topic links and columns */
 			whiteLabel.topicLinks = landingPage.topicLinks;
 		}
-		if (landingPage.changelog) {
+		if ( landingPage.changelog ) {
 			/*Topic links and columns */
 			whiteLabel.changelog = landingPage.changelog;
 		}
 	}
 
-	return <AtrcLandingTemplate1 {...whiteLabel} />;
+	return <AtrcLandingTemplate1 { ...whiteLabel } />;
 };
 
 export default Landing;

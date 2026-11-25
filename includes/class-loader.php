@@ -54,7 +54,6 @@ class Acme_Coming_Soon_Loader {
 
 		$this->actions = array();
 		$this->filters = array();
-
 	}
 
 	/**
@@ -110,7 +109,6 @@ class Acme_Coming_Soon_Loader {
 		);
 
 		return $hooks;
-
 	}
 
 	/**

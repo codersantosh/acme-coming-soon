@@ -1,148 +1,157 @@
-/*CSS*/
+/* global AcmeComingSoonLocalize */
+/* CSS */
 import './admin.scss';
 
 /* WordPress */
-import { render, createContext, useContext } from '@wordpress/element';
+import {
+	createContext,
+	createRoot,
+	lazy,
+	Suspense,
+	useContext,
+} from '@wordpress/element';
 
 /* Library */
 import { map, isEmpty } from 'lodash';
 
-/*Atrc*/
+/* Atrc: use direct module paths so unused controls are not evaluated. */
 import {
-    AtrcHashRouter,
-    AtrcRoute,
-    AtrcRoutes,
-    AtrcWrap,
-    AtrcNotice,
-    AtrcWrapFloating,
-    AtrcMain,
-} from 'atrc';
+	HashRouter as AtrcHashRouter,
+	Route as AtrcRoute,
+	Routes as AtrcRoutes,
+} from 'react-router-dom';
+import AtrcWrap from 'atrc/build/atoms/wrap';
+import AtrcNotice from 'atrc/build/molecules/notice';
+import AtrcWrapFloating from 'atrc/build/molecules/wrap-floating';
+import AtrcMain from 'atrc/build/organisms/main';
 
-import { AtrcApplyWithSettings } from 'atrc/build/data';
+import AtrcApplyWithSettings from 'atrc/build/data/hoc-settings';
 
-/*Inbuilt*/
+/* Inbuilt */
 import AdminHeader from './components/organisms/admin-header';
-import Initlanding from './pages/landing';
-import InitSettings from './pages/settings/routes';
 
-/* Local */
+const Landing = lazy( () => import( './pages/landing' ) );
+const Settings = lazy( () => import( './pages/settings/routes' ) );
+
+const RouteFallback = () => (
+	<AtrcWrap className="at-p" aria-busy="true" aria-live="polite">
+		Loading…
+	</AtrcWrap>
+);
 
 /* ==============Create Local Storage and Database Settings Context================== */
 export const AtrcReduxContextData = createContext();
 
 /* Admin routes pages */
 const AdminRoutes = () => {
-    const data = useContext(AtrcReduxContextData);
-    const { dbNotices, dbRemoveNotice } = data;
+	const data = useContext( AtrcReduxContextData );
+	const { dbNotices, dbRemoveNotice } = data;
 
-    return (
-        <>
-            <AdminHeader />
-            <AtrcMain>
-                <AtrcRoutes>
-                    <AtrcRoute
-                        index
-                        element={<Initlanding />}
-                    />
-                    <AtrcRoute
-                        exact
-                        path='/maintenance/*'
-                        element={<InitSettings />}
-                    />
-                </AtrcRoutes>
-                {/*Notice is common for settings*/}
-                {!isEmpty(dbNotices) ? (
-                    <AtrcWrapFloating>
-                        {map(dbNotices, (value, key) => (
-                            <AtrcNotice
-                                key={key}
-                                autoDismiss={5000}
-                                onAutoRemove={() => dbRemoveNotice(key)}
-                                onRemove={() => dbRemoveNotice(key)}>
-                                {value.message}
-                            </AtrcNotice>
-                        ))}
-                    </AtrcWrapFloating>
-                ) : null}
-            </AtrcMain>
-        </>
-    );
+	return (
+		<>
+			<AdminHeader />
+			<AtrcMain>
+				<Suspense fallback={ <RouteFallback /> }>
+					<AtrcRoutes>
+						<AtrcRoute index element={ <Landing /> } />
+						<AtrcRoute
+							exact
+							path="/maintenance/*"
+							element={ <Settings /> }
+						/>
+					</AtrcRoutes>
+				</Suspense>
+				{ ! isEmpty( dbNotices ) ? (
+					<AtrcWrapFloating>
+						{ map( dbNotices, ( value, key ) => (
+							<AtrcNotice
+								key={ key }
+								autoDismiss={ 5000 }
+								onAutoRemove={ () => dbRemoveNotice( key ) }
+								onRemove={ () => dbRemoveNotice( key ) }
+							>
+								{ value.message }
+							</AtrcNotice>
+						) ) }
+					</AtrcWrapFloating>
+				) : null }
+			</AtrcMain>
+		</>
+	);
 };
 
 /* Initilize database settings and add Context data*/
-const InitDatabaseSettings = (props) => {
-    const {
-        isLoading,
-        canSave,
-        settings,
-        updateSetting,
-        saveSettings,
-        notices,
-        removeNotice,
-        lsSettings,
-        lsUpdateSetting,
-        lsSaveSettings,
-    } = props;
+const InitDatabaseSettings = ( props ) => {
+	const {
+		isLoading,
+		canSave,
+		settings,
+		updateSetting,
+		saveSettings,
+		notices,
+		removeNotice,
+		lsSettings,
+		lsUpdateSetting,
+		lsSaveSettings,
+	} = props;
 
-    const dbProps = {
-        dbIsLoading: isLoading,
-        dbCanSave: canSave,
-        dbSettings: settings,
-        dbUpdateSetting: updateSetting,
-        dbSaveSettings: saveSettings,
-        dbNotices: notices,
-        dbRemoveNotice: removeNotice,
-        lsSettings: lsSettings,
-        lsUpdateSetting: lsUpdateSetting,
-        lsSaveSettings: lsSaveSettings,
-    };
-    return (
-        <AtrcReduxContextData.Provider value={{ ...dbProps }}>
-            <AtrcHashRouter basename='/'>
-                <AtrcWrap
-                    variant='wrp'
-                    className='at-box-szg at-m at-typ'>
-                    <AdminRoutes />
-                </AtrcWrap>
-            </AtrcHashRouter>
-        </AtrcReduxContextData.Provider>
-    );
+	const dbProps = {
+		dbIsLoading: isLoading,
+		dbCanSave: canSave,
+		dbSettings: settings,
+		dbUpdateSetting: updateSetting,
+		dbSaveSettings: saveSettings,
+		dbNotices: notices,
+		dbRemoveNotice: removeNotice,
+		lsSettings,
+		lsUpdateSetting,
+		lsSaveSettings,
+	};
+	return (
+		<AtrcReduxContextData.Provider value={ { ...dbProps } }>
+			<AtrcHashRouter basename="/">
+				<AtrcWrap variant="wrp" className="at-box-szg at-m at-typ">
+					<AdminRoutes />
+				</AtrcWrap>
+			</AtrcHashRouter>
+		</AtrcReduxContextData.Provider>
+	);
 };
-const InitDataBaseSettingsWithHoc = AtrcApplyWithSettings(InitDatabaseSettings);
+const InitDataBaseSettingsWithHoc =
+	AtrcApplyWithSettings( InitDatabaseSettings );
 
 /* Initilize local storage */
-const InitLocalStorageSettings = (props) => {
-    const { settings, updateSetting, saveSettings } = props;
-    const defaultSettings = {
-        gs1: true /* getting started 1 */,
-    };
-    return (
-        <InitDataBaseSettingsWithHoc
-            atrcStore='acme-coming-soon'
-            atrcStoreKey='settings'
-            lsSettings={settings || defaultSettings}
-            lsUpdateSetting={updateSetting}
-            lsSaveSettings={saveSettings}
-        />
-    );
+const InitLocalStorageSettings = ( props ) => {
+	const { settings, updateSetting, saveSettings } = props;
+	const defaultSettings = {
+		gs1: true /* getting started 1 */,
+	};
+	return (
+		<InitDataBaseSettingsWithHoc
+			atrcStore="acme-coming-soon"
+			atrcStoreKey="settings"
+			lsSettings={ settings || defaultSettings }
+			lsUpdateSetting={ updateSetting }
+			lsSaveSettings={ saveSettings }
+		/>
+	);
 };
 const InitLocalStorageSettingsWithHoc = AtrcApplyWithSettings(
-    InitLocalStorageSettings
+	InitLocalStorageSettings
 );
 
 /* Initilize react on oru div */
-document.addEventListener('DOMContentLoaded', () => {
-    // Check if the root element exists in the DOM
-    const rootElement = document.getElementById(AcmeComingSoonLocalize.root_id);
+document.addEventListener( 'DOMContentLoaded', () => {
+	const rootElement = document.getElementById(
+		AcmeComingSoonLocalize.root_id
+	);
 
-    if (rootElement) {
-        // Render the component into the root element
-        render(
-            <InitLocalStorageSettingsWithHoc
-                atrcStore='acme-coming-soon'
-                atrcStoreKey='acmeComingSoonLocal'
-            />,
-            rootElement
-        );
-    }
-});
+	if ( rootElement ) {
+		createRoot( rootElement ).render(
+			<InitLocalStorageSettingsWithHoc
+				atrcStore="acme-coming-soon"
+				atrcStoreKey="acmeComingSoonLocal"
+			/>
+		);
+	}
+} );

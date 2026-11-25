@@ -49,6 +49,34 @@ class Acme_Coming_Soon_Include {
 	private static $white_label = null;
 
 	/**
+	 * Reset the cached settings after the option changes.
+	 *
+	 * @since 1.0.7
+	 * @access public
+	 * @return void
+	 */
+	public static function reset_settings_cache() {
+		self::$settings = null;
+		self::register_option_hooks();
+	}
+
+	/**
+	 * Register atomic option merging and cache invalidation hooks.
+	 *
+	 * @since 1.0.7
+	 * @access private
+	 * @return void
+	 */
+	private static function register_option_hooks() {
+		add_filter( 'pre_update_option_' . ACME_COMING_SOON_OPTION_NAME, 'acme_coming_soon_merge_option_update', 10, 3 );
+
+		$callback = array( __CLASS__, 'reset_settings_cache' );
+		add_action( 'added_option_' . ACME_COMING_SOON_OPTION_NAME, $callback );
+		add_action( 'updated_option_' . ACME_COMING_SOON_OPTION_NAME, $callback );
+		add_action( 'deleted_option_' . ACME_COMING_SOON_OPTION_NAME, $callback );
+	}
+
+	/**
 	 * Gets an instance of this object.
 	 * Prevents duplicate instances which avoid artefacts and improves performance.
 	 *
@@ -64,10 +92,22 @@ class Acme_Coming_Soon_Include {
 		// Only run these methods if they haven't been ran previously.
 		if ( null === $instance ) {
 			$instance = new self();
+			$instance->register_cache_invalidation();
 		}
 
 		// Always return the instance.
 		return $instance;
+	}
+
+	/**
+	 * Register option hooks that invalidate the in-request settings cache.
+	 *
+	 * @since 1.0.7
+	 * @access private
+	 * @return void
+	 */
+	private function register_cache_invalidation() {
+		self::register_option_hooks();
 	}
 
 	/**
@@ -105,19 +145,6 @@ class Acme_Coming_Soon_Include {
 	 */
 	public function register_scripts_and_styles() {
 		/* Atomic css */
-		wp_register_style( 'atomic', ACME_COMING_SOON_URL . 'assets/library/atomic-css/atomic.min.css', array(), ACME_COMING_SOON_VERSION );
-	}
-}
-
-if ( ! function_exists( 'acme_coming_soon_include' ) ) {
-	/**
-	 * Return instance of  Acme_Coming_Soon_Include class
-	 *
-	 * @since 1.0.0
-	 *
-	 * @return Acme_Coming_Soon_Include
-	 */
-	function acme_coming_soon_include() {
-		return Acme_Coming_Soon_Include::get_instance();
+		wp_register_style( 'acme-coming-soon-atomic', ACME_COMING_SOON_URL . 'assets/library/atomic-css/atomic.min.css', array(), ACME_COMING_SOON_VERSION );
 	}
 }
