@@ -3,8 +3,7 @@
 import { AtrcApis, AtrcStore, AtrcRegisterStore } from 'atrc/build/data';
 
 AtrcApis.baseUrl( {
-	key: 'acme-coming-soon-global-api-base-url',
-
+	key: 'settings',
 	url: AcmeComingSoonLocalize.rest_url,
 } );
 
