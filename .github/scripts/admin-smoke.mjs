@@ -53,6 +53,11 @@ async function saveSettings(page) {
     save.click(),
   ]);
   assert.equal(response.status(), 200, `Settings save returned HTTP ${response.status()}.`);
+  const saveUrl = new URL(response.request().url());
+  assert.ok(
+    saveUrl.pathname.startsWith('/wp-json/'),
+    `Settings save used ${saveUrl.href} instead of the WordPress REST API.`,
+  );
   const settings = await response.json();
   await page.getByRole('button', { name: /^saved$/i }).waitFor({ state: 'visible' });
   return settings;
@@ -118,9 +123,29 @@ async function main() {
     assert.deepEqual(removed.exclude.ips, []);
     assert.deepEqual(removed.exclude.slugs, []);
 
+    // The maintenance toggle and page picker must persist through the REST API.
+    const maintenanceToggle = page.getByLabel('Activate coming soon (Maintenance) mode');
+    const pageSelect = page.getByLabel('Select maintenance page');
+    const template = Number(await pageSelect.inputValue());
+    assert.ok(template > 0, 'A maintenance page should be selected before toggling.');
+
+    await maintenanceToggle.uncheck();
+    const disabled = await saveSettings(page);
+    assert.equal(disabled.on, false, 'Turning maintenance mode off should persist.');
+
+    await maintenanceToggle.check();
+    const pageSelectAgain = page.getByLabel('Select maintenance page');
+    await pageSelectAgain.waitFor({ state: 'visible' });
+    if (Number(await pageSelectAgain.inputValue()) !== template) {
+      await pageSelectAgain.selectOption(String(template));
+    }
+    const enabled = await saveSettings(page);
+    assert.equal(enabled.on, true, 'Turning maintenance mode on should persist.');
+    assert.equal(enabled.template, template, 'The selected maintenance page should persist.');
+
     assert.deepEqual(pageErrors, [], `Admin page errors: ${pageErrors.join(' | ')}`);
     assert.deepEqual(consoleErrors, [], `Unexpected console errors: ${consoleErrors.join(' | ')}`);
-    console.log('Playwright admin smoke passed: login, add/remove IP and slug rows, and save.');
+    console.log('Playwright admin smoke passed: login, IP/slug rows, save, and maintenance toggle.');
   } finally {
     await browser.close();
   }
