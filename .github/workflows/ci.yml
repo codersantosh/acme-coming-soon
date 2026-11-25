@@ -106,6 +106,8 @@ jobs:
           php-version: '8.3'
           coverage: none
           extensions: curl, xml, mbstring, zip
+      - name: Install pinned WP-CLI
+        run: bash .github/scripts/install-wp-cli.sh
       - name: Verify Node and package version
         run: |
           set -euo pipefail
