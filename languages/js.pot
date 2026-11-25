@@ -2,193 +2,192 @@ msgid ""
 msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "X-Generator: babel-plugin-makepot\n"
+"POT-Creation-Date: 2025-04-17T17:43:00+0000\n"
 
-#: src/admin/pages/settings/pages/advanced.js:103
-msgid "Do I need to activate this option?"
+#: src/admin/pages/settings/pages/maintenance.js:502
+msgid "\"Coming Soon (Maintenance) mode\" is a feature that allows you to create a temporary maintenance page for your website while you work on new site, updates or changes. This page is displayed to visitors when they try to access your website, letting them know that your website is temporarily unavailable."
 msgstr ""
 
-#: src/admin/pages/settings/pages/advanced.js:108
-msgid ""
-"If you anticipate using the `Maintenance feature` in the future, no need to "
-"activate it."
-msgstr ""
-
-#: src/admin/pages/settings/pages/advanced.js:142
-#: src/admin/pages/settings/pages/maintenance.js:438
-msgid "Coming Soon and Maintenance Mode Page settings"
-msgstr ""
-
-#: src/admin/pages/settings/pages/advanced.js:42
-msgid "Remove all plugin settings when deactivating."
-msgstr ""
-
-#: src/admin/pages/settings/pages/advanced.js:66
-#: src/admin/pages/settings/pages/maintenance.js:329
-msgid "Documentation"
-msgstr ""
-
-#: src/admin/pages/settings/pages/advanced.js:88
-msgid "What does \"Remove all plugin settings when deactivating\" do?"
-msgstr ""
-
-#: src/admin/pages/settings/pages/advanced.js:96
-msgid ""
-"Enabling this option will erase all settings associated with the plugin "
-"from the WordPress options table. However, please note that the selected "
-"page will not be deleted from Pages."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:104
-msgid "Selected roles"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:113
-msgid "Allow user roles during maintenance mode."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:137
-msgid "Select maintenance page"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:149
-msgid "Exclude from Coming soon (Maintenance) mode"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:156
-msgid "Allow search bots during maintenance mode."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:160
-msgid ""
-"Enable access for search bots while the website is in \"Coming Soon\" or "
-"maintenance mode."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:179
-msgid "Allow IPs during maintenance mode."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:185
-msgid "Add IPs"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:201
-#. %s: placeholder for idx
-msgid "IP %d"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:207
-msgid "IP"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:208
-msgid "Enter valid IP"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:236
-msgid "Add IP"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:246
-msgid "Allow Slugs during maintenance mode."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:252
-msgid "Add slugs"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:268
-#. %s: placeholder for idx
-msgid "Slug %d"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:271
-msgid "Remove item"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:274
-msgid "Slug"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:275
-msgid "Any path of the url"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:303
-msgid "Add slug"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:351
-msgid "What is the \"Coming Soon (Maintenance) mode\"?"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:359
-msgid ""
-"\"Coming Soon (Maintenance) mode\" is a feature that allows you to create a "
-"temporary maintenance page for your website while you work on new site, "
-"updates or changes. This page is displayed to visitors when they try to "
-"access your website, letting them know that your website is temporarily "
-"unavailable."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:366
-msgid "Who can access the site during maintenance mode?"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:374
-msgid ""
-"By default, only logged-in users with administrative privileges can access "
-"the site during maintenance mode. This is to ensure that visitors to your "
-"website don't see an unfinished or broken version of your site. "
-"Nevertheless, you have the flexibility to tailor this functionality and "
-"permit access to various user roles."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:381
-msgid "What content is displayed during maintenance mode?"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:389
-msgid ""
-"During maintenance mode, the content displayed on your website is "
-"determined by the maintenance page that you have selected. You can choose "
-"to display a simple message informing visitors that your website is "
-"currently undergoing maintenance, or you can add more detailed information "
-"about the updates or changes that you are making. You can also add your "
-"logo, branding, and other design elements to the maintenance page to make "
-"it more visually appealing. The design is on your hand."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:396
-msgid ""
-"Can I exclude specific IP addresses, pages, or categories from Coming Soon "
-"Mode?"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:404
-msgid ""
-"Yes, you can allow search bots, IPs, and specific pages or post categories "
-"via slug when the Coming Soon Mode is activated. Simply configure the "
-"exclusions in the plugin settings to grant access to specific entities "
-"during maintenance."
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:71
-msgid "Activate coming soon (Maintenance) mode"
-msgstr ""
-
-#: src/admin/pages/settings/pages/maintenance.js:83
+#: src/admin/pages/settings/pages/maintenance.js:84
 msgid "Access site"
 msgstr ""
 
-#: src/admin/pages/settings/pages/maintenance.js:91
-msgid "None"
+#: src/admin/pages/settings/pages/maintenance.js:72
+msgid "Activate coming soon (Maintenance) mode"
 msgstr ""
 
-#: src/admin/pages/settings/pages/maintenance.js:95
+#: src/admin/pages/settings/pages/maintenance.js:314
+msgid "Add IP"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:215
+msgid "Add IPs"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:436
+msgid "Add slug"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:337
+msgid "Add slugs"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:96
 msgid "Admin only"
 msgstr ""
 
-#: src/admin/pages/settings/pages/maintenance.js:99
+#: src/admin/pages/settings/routes.js:68
+msgid "Advanced"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:208
+msgid "Allow IPs during maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:330
+msgid "Allow Slugs during maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:178
+msgid "Allow search bots during maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:125
+msgid "Allow user roles during maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:386
+msgid "Any path of the url"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:522
+msgid "By default, only logged-in users with administrative privileges can access the site during maintenance mode. This is to ensure that visitors to your website don't see an unfinished or broken version of your site. Nevertheless, you have the flexibility to tailor this functionality and permit access to various user roles."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:549
+msgid "Can I exclude specific IP addresses, pages, or categories from Coming Soon Mode?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:156
+#: src/admin/pages/settings/pages/maintenance.js:595
+msgid "Coming Soon and Maintenance Mode Page settings"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:110
+msgid "Do I need to activate this option?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:66
+#: src/admin/pages/settings/pages/maintenance.js:465
+msgid "Documentation"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:542
+msgid "During maintenance mode, the content displayed on your website is determined by the maintenance page that you have selected. You can choose to display a simple message informing visitors that your website is currently undergoing maintenance, or you can add more detailed information about the updates or changes that you are making. You can also add your logo, branding, and other design elements to the maintenance page to make it more visually appealing. The design is on your hand."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:182
+msgid "Enable access for search bots while the website is in \"Coming Soon\" or maintenance mode."
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:103
+msgid "Enabling this option will erase all settings associated with the plugin from the WordPress options table. However, please note that the selected page will not be deleted from Pages."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:264
+msgid "Enter valid IP"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:170
+msgid "Exclude from Coming soon (Maintenance) mode"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:64
+msgid "General"
+msgstr ""
+
+#: src/admin/components/organisms/admin-header.js:26
+msgid "Getting started"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:260
+msgid "IP"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:243
+#. %d: zero-based item index.
+msgid "IP %d"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:123
+msgid "If you anticipate using the `Maintenance feature` in the future, no need to activate it."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:103
 msgid "Login user"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:92
+msgid "None"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:40
+msgid "Remove all plugin settings when deactivating."
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:371
+msgid "Remove item"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:40
+msgid "Save settings"
+msgstr ""
+
+#: src/admin/pages/settings/routes.js:39
+msgid "Saved"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:150
+msgid "Select maintenance page"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:111
+msgid "Selected roles"
+msgstr ""
+
+#: src/admin/components/organisms/admin-header.js:31
+msgid "Settings"
+msgstr ""
+
+#: src/admin/components/organisms/admin-header.js:50
+msgid "Show all hidden informations, notices and documentations"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:382
+msgid "Slug"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:365
+#. %d: zero-based item index.
+msgid "Slug %d"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:529
+msgid "What content is displayed during maintenance mode?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/advanced.js:90
+msgid "What does \"Remove all plugin settings when deactivating\" do?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:489
+msgid "What is the \"Coming Soon (Maintenance) mode\"?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:509
+msgid "Who can access the site during maintenance mode?"
+msgstr ""
+
+#: src/admin/pages/settings/pages/maintenance.js:562
+msgid "Yes, you can allow search bots, IPs, and specific pages or post categories via slug when the Coming Soon Mode is activated. Simply configure the exclusions in the plugin settings to grant access to specific entities during maintenance."
 msgstr ""

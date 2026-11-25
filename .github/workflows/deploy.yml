@@ -1,0 +1,427 @@
+name: Deploy Acme Coming Soon to WordPress.org
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: Git ref to build (dry runs may use any ref; publishing requires v1.0.7)
+        required: true
+        type: string
+      dry_run:
+        description: Dry run (no SVN commit and no SVN credentials)
+        required: false
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: acme-coming-soon-wordpress-org
+  cancel-in-progress: false
+
+env:
+  EXPECTED_VERSION: '1.0.7'
+  PLUGIN_SLUG: acme-coming-soon
+
+jobs:
+  package:
+    if: github.event_name == 'workflow_dispatch' || github.event.release.prerelease == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      version: ${{ steps.resolve.outputs.version }}
+      commit: ${{ steps.resolve.outputs.commit }}
+      release_tag: ${{ steps.resolve.outputs.release_tag }}
+      release_url: ${{ steps.resolve.outputs.release_url }}
+      artifact: ${{ steps.artifact.outputs.artifact }}
+      package_sha256: ${{ steps.artifact.outputs.package_sha256 }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.release.tag_name || inputs.ref }}
+          fetch-depth: 0
+
+      - name: Resolve immutable release commit
+        id: resolve
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          RELEASE_TAG: ${{ github.event.release.tag_name }}
+          RELEASE_PAGE_URL: ${{ github.event.release.html_url }}
+          INPUT_REF: ${{ inputs.ref }}
+          INPUT_DRY_RUN: ${{ inputs.dry_run }}
+          EXPECTED_VERSION: ${{ env.EXPECTED_VERSION }}
+        run: |
+          set -euo pipefail
+
+          commit="$(git rev-parse HEAD)"
+          version="$(node -p "require('./package.json').version")"
+          release_tag=''
+          release_url=''
+
+          if [[ "$EVENT_NAME" == 'release' ]]; then
+            if [[ ! "$RELEASE_TAG" =~ ^v[0-9]+\.[0-9]+(\.[0-9]+)*$ ]]; then
+              echo "Release tag must look like v1.0.7; received '$RELEASE_TAG'." >&2
+              exit 1
+            fi
+            release_tag="$RELEASE_TAG"
+            release_url="$RELEASE_PAGE_URL"
+          elif [[ "$INPUT_DRY_RUN" == 'false' ]]; then
+            if [[ ! "$INPUT_REF" =~ ^v[0-9]+\.[0-9]+(\.[0-9]+)*$ ]]; then
+              echo "Manual publishing requires the exact v1.0.7 tag; received '$INPUT_REF'." >&2
+              exit 1
+            fi
+            if ! git show-ref --verify --quiet "refs/tags/${INPUT_REF}"; then
+              echo "The exact release tag refs/tags/${INPUT_REF} must exist." >&2
+              exit 1
+            fi
+            release_tag="$INPUT_REF"
+            release_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/releases/tag/${release_tag}"
+          fi
+
+          if [[ -n "$release_tag" ]]; then
+            tag_commit="$(git rev-parse "refs/tags/${release_tag}^{commit}")"
+            tag_version="${release_tag#v}"
+            if [[ "$tag_commit" != "$commit" ]]; then
+              echo "Release tag $release_tag does not resolve to the checked-out commit $commit." >&2
+              exit 1
+            fi
+            if [[ "$tag_version" != "$version" ]]; then
+              echo "Release tag version $tag_version does not match package version $version." >&2
+              exit 1
+            fi
+          fi
+
+          if [[ "$version" != "$EXPECTED_VERSION" ]]; then
+            echo "This release workflow requires package version $EXPECTED_VERSION; found $version." >&2
+            exit 1
+          fi
+
+          {
+            echo "version=$version"
+            echo "commit=$commit"
+            echo "release_tag=$release_tag"
+            echo "release_url=$release_url"
+          } >> "$GITHUB_OUTPUT"
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.22.2'
+          cache: npm
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: mysqli, curl, xml, mbstring, zip, intl
+          tools: composer:v2
+      - name: Install pinned WP-CLI
+        run: bash .github/scripts/install-wp-cli.sh
+      - name: Validate Composer metadata and lock
+        run: composer validate --strict --no-check-publish
+      - name: Install locked PHP dependencies
+        run: composer install --no-interaction --prefer-dist --no-progress
+      - name: Audit locked PHP dependencies
+        run: composer audit --locked --no-interaction --format=plain
+      - name: PHP syntax checks
+        run: |
+          set -euo pipefail
+          find . -type f -name '*.php' \
+            -not -path './node_modules/*' \
+            -not -path './vendor/*' \
+            -not -path './deploy/*' \
+            -print0 | xargs -0 -r -n1 php -l > /dev/null
+      - name: PHPUnit
+        run: vendor/bin/phpunit
+      - name: PHPCS
+        run: vendor/bin/phpcs --report=summary --warning-severity=0
+      - name: PHPCompatibility for PHP 8.3+
+        run: |
+          set -euo pipefail
+          mapfile -t php_paths < <(
+            find acme-coming-soon.php admin includes public \
+              \( -path '*/vendor/*' -o -path '*/node_modules/*' \) -prune -o \
+              -type f -name '*.php' -print
+          )
+          if [[ -f uninstall.php ]]; then
+            php_paths+=(uninstall.php)
+          fi
+          vendor/bin/phpcs \
+            --standard=PHPCompatibilityWP \
+            --runtime-set testVersion 8.3- \
+            --report=summary \
+            "${php_paths[@]}"
+      - name: Install locked npm dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Audit npm dependencies
+        run: |
+          set -euo pipefail
+          npm audit --audit-level=high
+          npm audit --omit=dev --audit-level=high
+      - name: Run JavaScript and SCSS lint scripts when present
+        run: |
+          set -euo pipefail
+          for script in lint lint:js lint:scss lint:sass lint:css; do
+            if node -e "process.exit(require('./package.json').scripts?.[process.argv[1]] ? 0 : 1)" "$script"; then
+              echo "Running npm run $script"
+              npm run "$script"
+            fi
+          done
+      - name: Build release package twice
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          archive="deploy/acme-coming-soon-${version}.zip"
+          [[ "$version" == "$EXPECTED_VERSION" ]]
+          rm -rf build deploy
+          npm run deploy
+          [[ -f "$archive" ]]
+          cp "$archive" "${RUNNER_TEMP}/acme-coming-soon-first.zip"
+          npm run deploy
+          cmp "${RUNNER_TEMP}/acme-coming-soon-first.zip" "$archive"
+      - name: Validate release package
+        run: |
+          set -euo pipefail
+          version="${{ steps.resolve.outputs.version }}"
+          python3 .github/scripts/verify-artifact.py "$version" deploy
+          php .github/scripts/validate-release.php "$version" deploy/acme-coming-soon
+          find deploy/acme-coming-soon -type f -name '*.php' -print0 \
+            | xargs -0 -r -n1 php -l > /dev/null
+          unzip -tqq "deploy/acme-coming-soon-${version}.zip"
+      - name: Run official WordPress Plugin Check 1.1.9
+        uses: wordpress/plugin-check-action@v1.1.9
+        with:
+          build-dir: deploy/acme-coming-soon
+          wp-version: '7.1.5'
+          slug: acme-coming-soon
+          ignore-errors: 'false'
+          ignore-warnings: 'false'
+          # Bundled ATRC 1.0.37 uses React APIs removed in React 19; upstream,
+          # tracked in docs/wordpress-org-deployment.md.
+          ignore-codes: 'react_removed_api'
+      - name: Verify checksum and bind immutable artifact identity
+        id: artifact
+        run: |
+          set -euo pipefail
+          version="${{ steps.resolve.outputs.version }}"
+          commit="${{ steps.resolve.outputs.commit }}"
+          archive="deploy/acme-coming-soon-${version}.zip"
+          digest="$(sha256sum "$archive" | cut -d ' ' -f 1)"
+          recorded="$(cut -d ' ' -f 1 "deploy/acme-coming-soon-${version}.zip.sha256")"
+          [[ "$digest" == "$recorded" ]]
+          artifact="acme-coming-soon-${version}-${commit}-${digest:0:12}"
+          echo "artifact=$artifact" >> "$GITHUB_OUTPUT"
+          echo "package_sha256=$digest" >> "$GITHUB_OUTPUT"
+      - name: Create artifact provenance manifest
+        env:
+          RELEASE_COMMIT: ${{ steps.resolve.outputs.commit }}
+          RELEASE_TAG: ${{ steps.resolve.outputs.release_tag }}
+          RELEASE_URL: ${{ steps.resolve.outputs.release_url }}
+          ARTIFACT_NAME: ${{ steps.artifact.outputs.artifact }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 .github/scripts/artifact-manifest.py create \
+            "${{ steps.resolve.outputs.version }}" deploy
+      - name: Verify artifact provenance manifest
+        env:
+          RELEASE_COMMIT: ${{ steps.resolve.outputs.commit }}
+          RELEASE_TAG: ${{ steps.resolve.outputs.release_tag }}
+          RELEASE_URL: ${{ steps.resolve.outputs.release_url }}
+          ARTIFACT_NAME: ${{ steps.artifact.outputs.artifact }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          python3 .github/scripts/artifact-manifest.py verify \
+            "${{ steps.resolve.outputs.version }}" deploy \
+            "${{ steps.artifact.outputs.package_sha256 }}"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: ${{ steps.artifact.outputs.artifact }}
+          path: |
+            deploy/acme-coming-soon/
+            deploy/acme-coming-soon-${{ steps.resolve.outputs.version }}.zip
+            deploy/acme-coming-soon-${{ steps.resolve.outputs.version }}.zip.sha256
+            deploy/artifact-manifest.json
+          if-no-files-found: error
+          retention-days: 14
+
+  runtime:
+    name: WordPress Runtime Matrix
+    needs: package
+    uses: ./.github/workflows/runtime.yml
+    with:
+      ref: ${{ needs.package.outputs.commit }}
+      package_sha256: ${{ needs.package.outputs.package_sha256 }}
+
+  dry-run:
+    name: Review SVN Package
+    needs: package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    outputs:
+      package_sha256: ${{ steps.verify.outputs.package_sha256 }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.package.outputs.commit }}
+          fetch-depth: 1
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ needs.package.outputs.artifact }}
+          path: deploy
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - name: Install SVN tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq subversion rsync
+      - name: Verify reviewed artifact
+        id: verify
+        env:
+          RELEASE_COMMIT: ${{ needs.package.outputs.commit }}
+          RELEASE_TAG: ${{ needs.package.outputs.release_tag }}
+          RELEASE_URL: ${{ needs.package.outputs.release_url }}
+          ARTIFACT_NAME: ${{ needs.package.outputs.artifact }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/verify-artifact.py \
+            "${{ needs.package.outputs.version }}" deploy
+          php .github/scripts/validate-release.php \
+            "${{ needs.package.outputs.version }}" \
+            deploy/acme-coming-soon
+          python3 .github/scripts/artifact-manifest.py verify \
+            "${{ needs.package.outputs.version }}" deploy \
+            "${{ needs.package.outputs.package_sha256 }}"
+      - name: Stage credential-free SVN dry run
+        env:
+          PLUGIN_SLUG: acme-coming-soon
+          VERSION: ${{ needs.package.outputs.version }}
+          BUNDLE: ${{ github.workspace }}/deploy/acme-coming-soon
+          DRY_RUN: 'true'
+          RELEASE_COMMIT: ${{ needs.package.outputs.commit }}
+          PACKAGE_SHA256: ${{ needs.package.outputs.package_sha256 }}
+          WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RELEASE_URL: ${{ needs.package.outputs.release_url }}
+          SVN_WORK_DIR: ${{ runner.temp }}/svn-acme-coming-soon-${{ needs.package.outputs.version }}
+          SVN_PREVIEW_DIR: ${{ github.workspace }}/deploy/svn-preview
+        run: bash .github/scripts/svn-release.sh
+      - name: Upload SVN review preview
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: svn-preview-${{ needs.package.outputs.version }}-${{ needs.package.outputs.commit }}
+          path: deploy/svn-preview/
+          if-no-files-found: ignore
+          retention-days: 14
+
+  deploy:
+    if: >-
+      (github.event_name == 'release' && github.event.release.prerelease == false) ||
+      (github.event_name == 'workflow_dispatch' && inputs.dry_run == false)
+    needs: [package, dry-run, runtime]
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    environment: wordpress-org
+    steps:
+      - name: Verify runtime-tested commit and artifact
+        env:
+          RELEASE_COMMIT: ${{ needs.package.outputs.commit }}
+          RUNTIME_COMMIT: ${{ needs.runtime.outputs.commit }}
+          PACKAGE_SHA256: ${{ needs.package.outputs.package_sha256 }}
+          RUNTIME_PACKAGE_SHA256: ${{ needs.runtime.outputs.package_sha256 }}
+          DRY_RUN_PACKAGE_SHA256: ${{ needs.dry-run.outputs.package_sha256 }}
+        run: |
+          set -euo pipefail
+          if [[ "$RELEASE_COMMIT" != "$RUNTIME_COMMIT" ]]; then
+            echo "Runtime tests used $RUNTIME_COMMIT instead of $RELEASE_COMMIT." >&2
+            exit 1
+          fi
+          if [[ "$PACKAGE_SHA256" != "$RUNTIME_PACKAGE_SHA256" ]]; then
+            echo "Runtime tests used ZIP $RUNTIME_PACKAGE_SHA256 instead of $PACKAGE_SHA256." >&2
+            exit 1
+          fi
+          if [[ "$PACKAGE_SHA256" != "$DRY_RUN_PACKAGE_SHA256" ]]; then
+            echo "The SVN dry run reviewed a different ZIP digest." >&2
+            exit 1
+          fi
+          echo "Runtime tests and SVN dry run match the release commit and ZIP digest."
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ needs.package.outputs.commit }}
+          fetch-depth: 1
+      - uses: actions/download-artifact@v8
+        with:
+          name: ${{ needs.package.outputs.artifact }}
+          path: deploy
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+      - name: Install SVN tools
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq subversion rsync
+      - name: Verify the exact artifact reviewed by runtime and dry run
+        env:
+          RELEASE_COMMIT: ${{ needs.package.outputs.commit }}
+          RELEASE_TAG: ${{ needs.package.outputs.release_tag }}
+          RELEASE_URL: ${{ needs.package.outputs.release_url }}
+          ARTIFACT_NAME: ${{ needs.package.outputs.artifact }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          python3 .github/scripts/verify-artifact.py \
+            "${{ needs.package.outputs.version }}" deploy
+          php .github/scripts/validate-release.php \
+            "${{ needs.package.outputs.version }}" \
+            deploy/acme-coming-soon
+          python3 .github/scripts/artifact-manifest.py verify \
+            "${{ needs.package.outputs.version }}" deploy \
+            "${{ needs.dry-run.outputs.package_sha256 }}"
+      - name: Publish and verify SVN release
+        id: publish
+        env:
+          PLUGIN_SLUG: acme-coming-soon
+          VERSION: ${{ needs.package.outputs.version }}
+          BUNDLE: ${{ github.workspace }}/deploy/acme-coming-soon
+          DRY_RUN: 'false'
+          RELEASE_COMMIT: ${{ needs.package.outputs.commit }}
+          PACKAGE_SHA256: ${{ needs.dry-run.outputs.package_sha256 }}
+          WORKFLOW_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          RELEASE_URL: ${{ needs.package.outputs.release_url }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          SVN_WORK_DIR: ${{ runner.temp }}/svn-acme-coming-soon-${{ needs.package.outputs.version }}
+          SVN_PREVIEW_DIR: ${{ github.workspace }}/deploy/svn-preview
+        run: bash .github/scripts/svn-release.sh
+      - name: Deployment summary
+        env:
+          RELEASE_VERSION: ${{ needs.package.outputs.version }}
+          RELEASE_COMMIT: ${{ steps.publish.outputs.commit }}
+          SVN_REVISION: ${{ steps.publish.outputs.revision }}
+          PACKAGE_SHA256: ${{ steps.publish.outputs.package_sha256 }}
+          WORKFLOW_RUN_URL: ${{ steps.publish.outputs.workflow_run_url }}
+          RELEASE_URL: ${{ steps.publish.outputs.release_url }}
+        run: |
+          set -euo pipefail
+          {
+            echo "### Acme Coming Soon ${RELEASE_VERSION} deployed"
+            echo "- SVN revision: ${SVN_REVISION}"
+            echo "- Git commit: ${RELEASE_COMMIT}"
+            echo "- Artifact SHA-256: ${PACKAGE_SHA256}"
+            echo "- Workflow: ${WORKFLOW_RUN_URL}"
+            if [[ -n "$RELEASE_URL" ]]; then
+              echo "- Release: ${RELEASE_URL}"
+            fi
+          } | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Upload committed SVN provenance
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: svn-provenance-${{ needs.package.outputs.version }}-${{ needs.package.outputs.commit }}
+          path: deploy/svn-preview/
+          if-no-files-found: ignore
+          retention-days: 30

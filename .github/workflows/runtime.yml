@@ -1,0 +1,208 @@
+name: WordPress Runtime
+
+on:
+  workflow_call:
+    inputs:
+      ref:
+        description: Exact Git commit or ref to check out and test
+        required: false
+        type: string
+        default: ''
+      package_sha256:
+        description: Optional release ZIP digest every matrix job must match
+        required: false
+        type: string
+        default: ''
+    outputs:
+      commit:
+        description: Git commit tested by every runtime matrix job
+        value: ${{ jobs.verify-results.outputs.commit }}
+      package_sha256:
+        description: ZIP digest tested by every runtime matrix job
+        value: ${{ jobs.verify-results.outputs.package_sha256 }}
+
+permissions:
+  contents: read
+
+jobs:
+  runtime:
+    name: WordPress ${{ matrix.wordpress }} / PHP 8.3 / MySQL 8
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        wordpress: ['7.0.9', '7.1.5']
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_ROOT_HOST: '%'
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -proot --silent"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=12
+    env:
+      WP_VERSION: ${{ matrix.wordpress }}
+      EXPECTED_PACKAGE_SHA256: ${{ inputs.package_sha256 }}
+      EXPECTED_VERSION: '1.0.7'
+      PLUGIN_SLUG: acme-coming-soon
+      DB_NAME: acme_coming_soon_runtime
+      DB_USER: root
+      DB_PASSWORD: root
+      DB_HOST: 127.0.0.1:3306
+      ADMIN_USER: acmeadmin
+      ADMIN_PASSWORD: Acme-Admin-Runtime-2026!
+      ADMIN_EMAIL: admin@example.com
+      EDITOR_USER: acmeeditor
+      EDITOR_PASSWORD: Acme-Editor-Runtime-2026!
+      SUBSCRIBER_USER: acmesubscriber
+      SUBSCRIBER_PASSWORD: Acme-Subscriber-Runtime-2026!
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ inputs.ref || github.sha }}
+          persist-credentials: false
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '22.22.2'
+          cache: npm
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          coverage: none
+          extensions: mysqli, curl, xml, mbstring, zip, intl
+      - name: Install pinned WP-CLI
+        run: bash .github/scripts/install-wp-cli.sh
+      - name: Install locked npm dependencies
+        run: npm ci --no-audit --no-fund
+      - name: Install optional Playwright browser
+        id: playwright
+        run: |
+          set -euo pipefail
+          if node -e "require.resolve('playwright')" >/dev/null 2>&1; then
+            npx --no-install playwright install --with-deps chromium
+            echo "available=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "Playwright is not installed; the optional admin browser smoke test will be skipped."
+            echo "available=false" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Build release package twice
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          archive="deploy/acme-coming-soon-${version}.zip"
+          [[ "$version" == "$EXPECTED_VERSION" ]]
+          rm -rf build deploy
+          npm run deploy
+          [[ -f "$archive" ]]
+          cp "$archive" "${RUNNER_TEMP}/acme-coming-soon-first.zip"
+          npm run deploy
+          cmp "${RUNNER_TEMP}/acme-coming-soon-first.zip" "$archive"
+      - name: Validate runtime package
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          python3 .github/scripts/verify-artifact.py "$version" deploy
+          php .github/scripts/validate-release.php "$version" deploy/acme-coming-soon
+          unzip -tqq "deploy/acme-coming-soon-${version}.zip"
+      - name: Bind runtime result to commit and ZIP digest
+        id: digest
+        run: |
+          set -euo pipefail
+          version="$(node -p "require('./package.json').version")"
+          digest="$(sha256sum "deploy/acme-coming-soon-${version}.zip" | cut -d ' ' -f 1)"
+          if [[ -n "$EXPECTED_PACKAGE_SHA256" && "$digest" != "$EXPECTED_PACKAGE_SHA256" ]]; then
+            echo "Runtime ZIP digest $digest does not match release digest $EXPECTED_PACKAGE_SHA256." >&2
+            exit 1
+          fi
+          commit="$(git rev-parse HEAD)"
+          {
+            printf 'commit=%s\n' "$commit"
+            printf 'package_sha256=%s\n' "$digest"
+            printf 'wordpress=%s\n' "$WP_VERSION"
+          } > "${RUNNER_TEMP}/acme-runtime-${WP_VERSION}.txt"
+          echo "commit=$commit" >> "$GITHUB_OUTPUT"
+          echo "package_sha256=$digest" >> "$GITHUB_OUTPUT"
+      - name: Run WordPress runtime smoke test
+        env:
+          RUN_PLAYWRIGHT: ${{ steps.playwright.outputs.available }}
+        run: bash .github/scripts/wordpress-runtime-smoke.sh
+      - name: Upload runtime identity
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: acme-runtime-result-${{ matrix.wordpress }}
+          path: ${{ runner.temp }}/acme-runtime-${{ matrix.wordpress }}.txt
+          if-no-files-found: error
+          retention-days: 14
+
+  verify-results:
+    name: Verify Runtime Matrix Identity
+    needs: runtime
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      commit: ${{ steps.verify.outputs.commit }}
+      package_sha256: ${{ steps.verify.outputs.package_sha256 }}
+    steps:
+      - uses: actions/download-artifact@v8
+        with:
+          pattern: acme-runtime-result-*
+          merge-multiple: true
+          path: ${{ runner.temp }}/acme-runtime-results
+      - name: Require identical commit and digest across both WordPress versions
+        id: verify
+        env:
+          EXPECTED_PACKAGE_SHA256: ${{ inputs.package_sha256 }}
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import os
+          import re
+          from pathlib import Path
+
+          root = Path(os.environ["RUNNER_TEMP"]) / "acme-runtime-results"
+          files = sorted(root.glob("acme-runtime-*.txt"))
+          expected_versions = {"7.0.9", "7.1.5"}
+          if len(files) != 2:
+              raise SystemExit(f"Expected two runtime result files, found {len(files)}")
+
+          records = []
+          for path in files:
+              values = {}
+              for line in path.read_text(encoding="utf-8").splitlines():
+                  key, separator, value = line.partition("=")
+                  if not separator or not key or not value or key in values:
+                      raise SystemExit(f"Malformed runtime result: {path}")
+                  values[key] = value
+              if set(values) != {"commit", "package_sha256", "wordpress"}:
+                  raise SystemExit(f"Unexpected runtime result fields: {path}")
+              if not re.fullmatch(r"[0-9a-f]{40}", values["commit"]):
+                  raise SystemExit(f"Invalid runtime commit: {path}")
+              if not re.fullmatch(r"[0-9a-f]{64}", values["package_sha256"]):
+                  raise SystemExit(f"Invalid runtime ZIP digest: {path}")
+              records.append(values)
+
+          versions = {record["wordpress"] for record in records}
+          commits = {record["commit"] for record in records}
+          digests = {record["package_sha256"] for record in records}
+          if versions != expected_versions:
+              raise SystemExit(f"Runtime matrix is incomplete: {sorted(versions)}")
+          if len(commits) != 1 or len(digests) != 1:
+              raise SystemExit("Runtime matrix jobs did not test one immutable commit and ZIP")
+          expected_digest = os.environ.get("EXPECTED_PACKAGE_SHA256", "")
+          digest = next(iter(digests))
+          if expected_digest and digest != expected_digest:
+              raise SystemExit("Runtime matrix digest does not match the requested release digest")
+
+          output = os.environ["GITHUB_OUTPUT"]
+          with open(output, "a", encoding="utf-8") as handle:
+              handle.write(f"commit={next(iter(commits))}\n")
+              handle.write(f"package_sha256={digest}\n")
+          print(f"Runtime matrix verified: {next(iter(commits))} / {digest}")
+          PY

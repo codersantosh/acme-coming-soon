@@ -9,18 +9,20 @@
  * Plugin Name:       Acme Coming Soon and Maintenance Mode Page
  * Plugin URI:        https://patternswp.com/wp-plugins/coming-soon-and-maintenance-mode-page/
  * Description:       Coming Soon and Maintenance Mode Page simplifies WordPress site management. Easily enable or disable Coming Soon or Maintenance Mode in a toggle, redirecting unauthorized users to a personalized page. Craft your page using Gutenberg Blocks/Patterns or your favorite page builder with complete flexibility and features for creating any WordPress page.
- * Version:           1.0.6
+ * Version:           1.0.7
  * Author:            patternswp
  * Author URI:        https://patternswp.com/
  * License:           GPL-2.0+
  * License URI:       http://www.gnu.org/licenses/gpl-2.0.txt
+ * Requires at least: 7.0
+ * Requires PHP:      8.3
  * Text Domain:       acme-coming-soon
  * Domain Path:       /languages
  */
 
 // If this file is called directly, abort.
-if ( ! defined( 'WPINC' ) ) {
-	die;
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
 }
 
 /**
@@ -32,7 +34,7 @@ if ( ! defined( 'WPINC' ) ) {
  */
 define( 'ACME_COMING_SOON_PATH', plugin_dir_path( __FILE__ ) );
 define( 'ACME_COMING_SOON_URL', plugin_dir_url( __FILE__ ) );
-define( 'ACME_COMING_SOON_VERSION', '1.0.6' );
+define( 'ACME_COMING_SOON_VERSION', '1.0.7' );
 define( 'ACME_COMING_SOON_PLUGIN_NAME', 'acme-coming-soon' );
 define( 'ACME_COMING_SOON_OPTION_NAME', 'acme_coming_soon_options' );
 
@@ -49,10 +51,12 @@ function acme_coming_soon_activate() {
 /**
  * The code that runs during plugin deactivation.
  * This action is documented in includes/class-deactivator.php
+ *
+ * @param bool $network_deactivating Whether the plugin is being network-deactivated.
  */
-function acme_coming_soon_deactivate() {
+function acme_coming_soon_deactivate( $network_deactivating = false ) {
 	require_once ACME_COMING_SOON_PATH . 'includes/class-deactivator.php';
-	Acme_Coming_Soon_Deactivator::deactivate();
+	Acme_Coming_Soon_Deactivator::deactivate( $network_deactivating );
 }
 
 register_activation_hook( __FILE__, 'acme_coming_soon_activate' );
